@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
 import { ShopContext } from '../context/ShopContext';
 import Title from './Title';
 import ProductItem from './ProductItem';
@@ -21,8 +22,8 @@ const RelatedProducts = ({category, subCategory}) => {
     }, [products])
 
     return (
-    <div className='my-24'>
-      <div className='text-center text-3xl py-2 '>
+    <div className='my-24 dark:bg-gray-800'>
+      <div className='text-center text-3xl py-2'>
         <Title text1={'RELATED'} text2={'PRODUCTS'} />
       </div>
 
@@ -33,6 +34,11 @@ const RelatedProducts = ({category, subCategory}) => {
       </div>
     </div>
   )
+}
+
+RelatedProducts.propTypes = {
+  category: PropTypes.string.isRequired,
+  subCategory: PropTypes.string.isRequired
 }
 
 export default RelatedProducts

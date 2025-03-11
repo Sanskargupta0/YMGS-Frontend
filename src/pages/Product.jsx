@@ -41,7 +41,7 @@ const Product = () => {
     };
 
   return productData ? (
-    <div className='border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100'>
+    <div className='border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100 dark:bg-gray-800 dark:border-gray-700'>
       {/*product data */}
       <div className='flex gap-12 sm:gap-12 flex-col sm:flex-row'>
         {/*product images */}
@@ -59,31 +59,31 @@ const Product = () => {
         </div>
         {/*product info */}
         <div className='flex-1'>
-            <h1 className='font-medium text-2xl mt-2'>{productData.name}</h1>
+            <h1 className='font-medium text-2xl mt-2 dark:text-white'>{productData.name}</h1>
             <div className='flex items-center gap-1 mt-2'>
               <img src={assets.star_icon} alt="" className="w-3 5" />
               <img src={assets.star_icon} alt="" className="w-3 5" />
               <img src={assets.star_icon} alt="" className="w-3 5" />
               <img src={assets.star_icon} alt="" className="w-3 5" />
               <img src={assets.star_dull_icon} alt="" className="w-3 5" />
-              <p className='pl-2'>(122)</p>
+              <p className='pl-2 dark:text-gray-300'>(122)</p>
             </div>
-            <p className='mt-5 text-3xl font-medium'>{currency}{productData.price}</p>
-            <p className='mt-5 text-gray-500 md:w-4/5'>{productData.description}</p>
+            <p className='mt-5 text-3xl font-medium dark:text-white'>{currency}{productData.price}</p>
+            <p className='mt-5 text-gray-500 dark:text-gray-300 md:w-4/5'>{productData.description}</p>
             <div className='flex flex-col gap-4 my-8 '>
             <div className='flex items-center gap-4 mb-4'>
-              <span className='text-gray-600'>Quantity:</span>
-              <div className='flex items-center border border-gray-300'>
+              <span className='text-gray-600 dark:text-gray-300'>Quantity:</span>
+              <div className='flex items-center border border-gray-300 dark:border-gray-600'>
                 <button 
                   onClick={handleDecreaseQuantity}
-                  className='px-3 py-1 border-r border-gray-300 hover:bg-gray-100'
+                  className='px-3 py-1 border-r border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white'
                 >
                   -
                 </button>
-                <span className='px-4 py-1'>{quantity}</span>
+                <span className='px-4 py-1 dark:text-white'>{quantity}</span>
                 <button 
                   onClick={handleIncreaseQuantity}
-                  className='px-3 py-1 border-l border-gray-300 hover:bg-gray-100'
+                  className='px-3 py-1 border-l border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white'
                 >
                   +
                 </button>
@@ -99,12 +99,12 @@ const Product = () => {
            
             <button 
               onClick={() => addToCart(productData._id, quantity)} 
-              className='bg-black text-white px-8 py-3 text-sm active:bg-gray-700'
+              className='bg-black text-white px-8 py-3 text-sm active:bg-gray-700 dark:bg-yellow-400 dark:text-gray-800 dark:hover:bg-yellow-500'
             >
               ADD TO CART
             </button>
-            <hr className='mt-8 sm:w-4/5 '/>
-            <div className='text-sm text-gray-500 mt-5 flex flex-col gap-1'>
+            <hr className='mt-8 sm:w-4/5 dark:border-gray-700'/>
+            <div className='text-sm text-gray-500 dark:text-gray-400 mt-5 flex flex-col gap-1'>
                 <p>Cash on Delivery Available on this Product.</p>
                 <p>No Refunds and No Returns</p>
             </div>

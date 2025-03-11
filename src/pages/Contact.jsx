@@ -72,8 +72,8 @@ const Contact = () => {
   }
 
   return (
-    <div>
-      <div className='text-center text-2xl pt-10 border-t'>
+    <div className="dark:bg-gray-800">
+      <div className='text-center text-2xl pt-10 border-t dark:border-gray-700'>
         <Title text1={'CONTACT'} text2={'US'} />
       </div>
 
@@ -85,34 +85,34 @@ const Contact = () => {
           loading="eager"
           width="480"
           height="360"
-          fetchPriority="high"
+          fetchpriority="high"
           sizes="(max-width: 768px) 100vw, 480px"
         />
         <div className='flex flex-col justify-center items-start gap-8'>
           <div>
-            <p className='font-semibold text-xl text-gray-800 mb-4'>Get In Touch</p>
-            <p className='text-gray-600 max-w-md'>Have questions about our products or delivery? 
+            <p className='font-semibold text-xl text-gray-800 dark:text-gray-200 mb-4'>Get In Touch</p>
+            <p className='text-gray-600 dark:text-gray-300 max-w-md'>Have questions about our products or delivery? 
               We&apos;re here to help you get the freshest produce for your family.</p>
           </div>
 
           <div className='flex flex-col gap-6'>
-            <div className='flex items-center gap-3 text-gray-600'>
-              <MapPin className='text-primary' size={20} />
+            <div className='flex items-center gap-3 text-gray-600 dark:text-gray-300'>
+              <MapPin className='text-primary dark:text-yellow-400' size={20} />
               <p>123 Fresh Market Lane<br />Garden District, Green City 12345</p>
             </div>
 
-            <div className='flex items-center gap-3 text-gray-600'>
-              <Phone className='text-primary' size={20} />
+            <div className='flex items-center gap-3 text-gray-600 dark:text-gray-300'>
+              <Phone className='text-primary dark:text-yellow-400' size={20} />
               <p>+1 (555) 123-4567</p>
             </div>
 
-            <div className='flex items-center gap-3 text-gray-600'>
-              <Mail className='text-primary' size={20} />
+            <div className='flex items-center gap-3 text-gray-600 dark:text-gray-300'>
+              <Mail className='text-primary dark:text-yellow-400' size={20} />
               <p>support@YMGS.com</p>
             </div>
 
-            <div className='flex items-center gap-3 text-gray-600'>
-              <Clock className='text-primary' size={20} />
+            <div className='flex items-center gap-3 text-gray-600 dark:text-gray-300'>
+              <Clock className='text-primary dark:text-yellow-400' size={20} />
               <p>Mon - Sat: 8:00 AM - 8:00 PM<br />Sunday: 9:00 AM - 6:00 PM</p>
             </div>
           </div>
@@ -122,13 +122,13 @@ const Contact = () => {
      
 <div className="container px-4 mx-auto">
   <div className="mx-auto">
-    <div className="max-w-md mx-auto px-8 py-6 bg-gray-100 rounded-lg shadow-lg">
-      <h2 className="text-2xl font-semibold text-gray-800 mb-4">Contact Us</h2>
+    <div className="max-w-md mx-auto px-8 py-6 bg-gray-100 dark:bg-gray-700 rounded-lg shadow-lg">
+      <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-200 mb-4">Contact Us</h2>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label className="block text-gray-800 mb-1" htmlFor="name">Your Name</label>
+          <label className="block text-gray-800 dark:text-gray-200 mb-1" htmlFor="name">Your Name</label>
           <input
-            className="w-full px-4 py-2 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-300 transition duration-300"
+            className="w-full px-4 py-2 bg-gray-200 dark:bg-gray-600 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-300 dark:focus:ring-yellow-400 transition duration-300"
             placeholder="Enter your name"
             name="name"
             id="name"
@@ -139,9 +139,9 @@ const Contact = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-800 mb-1" htmlFor="email">Your Email</label>
+          <label className="block text-gray-800 dark:text-gray-200 mb-1" htmlFor="email">Your Email</label>
           <input
-            className="w-full px-4 py-2 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-300 transition duration-300"
+            className="w-full px-4 py-2 bg-gray-200 dark:bg-gray-600 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-300 dark:focus:ring-yellow-400 transition duration-300"
             placeholder="Enter your email"
             name="email"
             id="email"
@@ -152,9 +152,9 @@ const Contact = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-800 mb-1" htmlFor="phone">Your Phone Number</label>
+          <label className="block text-gray-800 dark:text-gray-200 mb-1" htmlFor="phone">Your Phone Number</label>
           <input
-            className="w-full px-4 py-2 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-300 transition duration-300"
+            className="w-full px-4 py-2 bg-gray-200 dark:bg-gray-600 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-300 dark:focus:ring-yellow-400 transition duration-300"
             placeholder="Enter your phone number"
             name="phone"
             id="phone"
@@ -165,9 +165,9 @@ const Contact = () => {
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-800 mb-1" htmlFor="message">Your Message</label>
+          <label className="block text-gray-800 dark:text-gray-200 mb-1" htmlFor="message">Your Message</label>
           <textarea
-            className="w-full px-4 py-2 bg-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-300 transition duration-300"
+            className="w-full px-4 py-2 bg-gray-200 dark:bg-gray-600 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-300 dark:focus:ring-yellow-400 transition duration-300"
             rows="4"
             placeholder="Enter your message"
             name="message"
@@ -178,7 +178,7 @@ const Contact = () => {
           ></textarea>
         </div>
         <button
-          className="w-full bg-yellow-300 text-gray-800 py-2 px-4 rounded-lg hover:bg-yellow-400 transition duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
+          className="w-full bg-yellow-300 text-gray-800 dark:bg-yellow-400 dark:hover:bg-yellow-500 py-2 px-4 rounded-lg hover:bg-yellow-400 transition duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
           type="submit"
           disabled={isSubmitting}
         >

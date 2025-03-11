@@ -54,7 +54,7 @@ const Policy = () => {
                 <ul className="list-disc ml-5 mt-2 space-y-1">
                   <li>Standard delivery: 2-3 business days</li>
                   <li>Express delivery: 24 hours (where available)</li>
-                  <li>Free shipping on orders above ₹500</li>
+                  <li>Free shipping on orders above $500</li>
                 </ul>
               </div>
             </div>

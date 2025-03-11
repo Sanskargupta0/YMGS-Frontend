@@ -18,7 +18,7 @@ import Policy from './pages/Policy'
 
 const App = () => {
   return(
-    <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]'>
+    <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw] dark:bg-gray-800 transition-colors'>
       <ToastContainer position='bottom-right' autoClose={2000} />
       <NavBar />
       <SearchBar />

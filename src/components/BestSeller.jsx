@@ -14,10 +14,10 @@ const BestSeller = () => {
         setBestSeller(bestProduct.slice(0, 5));
     }, [products])
     return (
-    <div className='my-10'>
+    <div className='my-10 dark:bg-gray-800'>
       <div className='text-center text-3xl py-8'>
         <Title text1={'BEST'} text2={'SELLERS'} />
-        <p className='w-3/4 m-auto text-xs sm:text-sm md:test-base text-gray-600'>
+        <p className='w-3/4 m-auto text-xs sm:text-sm md:test-base text-gray-600 dark:text-gray-300'>
             These Items Are Selling Faster, Grab Your's Before The Stock Ends...!
         </p>
       </div>

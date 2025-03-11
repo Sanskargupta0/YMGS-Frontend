@@ -39,13 +39,13 @@ const Cart = () => {
 
   // Empty cart component
   const EmptyCart = () => (
-    <div className='flex flex-col items-center justify-center py-20'>
+    <div className='flex flex-col items-center justify-center py-20 dark:text-gray-200'>
      
-      <h2 className='text-2xl font-medium text-gray-600 mb-4'>Your Cart is Empty</h2>
-      <p className='text-gray-500 mb-8'>Looks like you haven't added anything to your cart yet</p>
+      <h2 className='text-2xl font-medium text-gray-600 dark:text-gray-300 mb-4'>Your Cart is Empty</h2>
+      <p className='text-gray-500 dark:text-gray-400 mb-8'>Looks like you haven&apos;t added anything to your cart yet</p>
       <button 
         onClick={() => navigate('/collection')} 
-        className='bg-black text-white px-8 py-3 text-sm hover:bg-gray-800'
+        className='bg-black text-white px-8 py-3 text-sm hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600'
       >
         SHOP NOW
       </button>
@@ -53,7 +53,7 @@ const Cart = () => {
   );
 
   return (
-    <div className='border-t pt-14'>
+    <div className='border-t dark:border-gray-700 pt-14 dark:bg-gray-800'>
       <div className='text-2xl mb-3'>
         <Title text1={'YOUR'} text2={'CART'}/>
       </div>
@@ -70,15 +70,15 @@ const Cart = () => {
               const minOrderQuantity = productData.minOrderQuantity || 1;
 
               return (
-                <div key={index} className='py-4 border-t border-b text-gray-700 grid grid-cols-[4fr_0.5fr_0.5fr] sm:grid-cols-[4fr_2fr_0.5fr] items-center gap-4'>
+                <div key={index} className='py-4 border-t border-b dark:border-gray-700 text-gray-700 dark:text-gray-200 grid grid-cols-[4fr_0.5fr_0.5fr] sm:grid-cols-[4fr_2fr_0.5fr] items-center gap-4'>
                   <div className='flex items-start gap-6'>
                     <img className='w-16 sm:w-20' src={productData.image[0]} alt="" />
                     <div>
-                      <p className='text-xs sm:text-lg font-medium'>{productData.name}</p>
+                      <p className='text-xs sm:text-lg font-medium dark:text-white'>{productData.name}</p>
                       <div className='flex items-center gap-5 mt-2'>
-                        <p>{currency}{productData.price}</p>
+                        <p className='dark:text-gray-300'>{currency}{productData.price}</p>
                         {minOrderQuantity > 1 && (
-                          <p className='text-xs text-orange-600'>Min qty: {minOrderQuantity}</p>
+                          <p className='text-xs text-orange-600 dark:text-orange-400'>Min qty: {minOrderQuantity}</p>
                         )}
                       </div>
                     </div>
@@ -90,14 +90,14 @@ const Cart = () => {
                         updateQuantity(item._id, Number(value));
                       }
                     }} 
-                    className='border max-w-10 sm:max-w-20 px-1 sm:px-2 py-1' 
+                    className='border dark:border-gray-600 dark:bg-gray-700 dark:text-white max-w-10 sm:max-w-20 px-1 sm:px-2 py-1' 
                     type='number' 
                     min={minOrderQuantity} 
                     value={item.quantity} 
                   />
                   <img 
                     onClick={() => updateQuantity(item._id, 0)} 
-                    className='w-4 mr-4 sm:w-5 cursor-pointer' 
+                    className='w-4 mr-4 sm:w-5 cursor-pointer dark:invert' 
                     src={assets.bin_icon} 
                     alt="" 
                   />
@@ -112,7 +112,7 @@ const Cart = () => {
               <div className='w-full text-end'>
                 <button 
                   onClick={proceedToPayment} 
-                  className='bg-black text-white text-sm my-8 px-8 py-3'
+                  className='bg-black text-white text-sm my-8 px-8 py-3 dark:bg-yellow-400 dark:text-gray-800 dark:hover:bg-yellow-500'
                 >
                   PROCEED TO PAYMENT
                 </button>
