@@ -81,7 +81,7 @@ const Collection = () => {
   return (
     <div className='flex flex-col sm:flex-row gap-1 sm:gap-10 pt-10 border-t'>
       {/* Filter Section */}
-      {/* <div className='min-w-60'>
+      <div className='min-w-60'>
         <p onClick={() => setShowFilter(!showFilter)} className='my-2 text-xl flex items-center cursor-pointer gap-2'>
           FILTERS
           <img
@@ -94,16 +94,22 @@ const Collection = () => {
           <p className='mb-3 text-sm font-medium'>CATEGORIES</p>
           <div className='flex flex-col gap-2 text-sm font-light text-gray-700'>
             <p className='flex gap-2'>
-              <input className='w-3' type='checkbox' value={'Vegetables'} onChange={toggleCategory} /> Vegetables
+              <input className='w-3' type='checkbox' value={'Prescription'} onChange={toggleCategory} /> Prescription Medicines
             </p>
             <p className='flex gap-2'>
-              <input className='w-3' type='checkbox' value={'Fruits'} onChange={toggleCategory} /> Fruits
+              <input className='w-3' type='checkbox' value={'OTC'} onChange={toggleCategory} /> Over The Counter
             </p>
             <p className='flex gap-2'>
-              <input className='w-3' type='checkbox' value={'Leafy Greens'} onChange={toggleCategory} /> Leafy Greens
+              <input className='w-3' type='checkbox' value={'Healthcare'} onChange={toggleCategory} /> Healthcare Devices
             </p>
             <p className='flex gap-2'>
-              <input className='w-3' type='checkbox' value={'Herbs'} onChange={toggleCategory} /> Herbs
+              <input className='w-3' type='checkbox' value={'Wellness'} onChange={toggleCategory} /> Wellness Products
+            </p>
+            <p className='flex gap-2'>
+              <input className='w-3' type='checkbox' value={'Personal Care'} onChange={toggleCategory} /> Personal Care
+            </p>
+            <p className='flex gap-2'>
+              <input className='w-3' type='checkbox' value={'Ayurvedic'} onChange={toggleCategory} /> Ayurvedic Medicines
             </p>
           </div>
         </div>
@@ -112,20 +118,29 @@ const Collection = () => {
           <p className='mb-3 text-sm font-medium'>TYPE</p>
           <div className='flex flex-col gap-2 text-sm font-light text-gray-700'>
             <p className='flex gap-2'>
-              <input className='w-3' type='checkbox' value={'Fresh'} onChange={toggleSubCategory}/> Fresh
+              <input className='w-3' type='checkbox' value={'Tablets'} onChange={toggleSubCategory}/> Tablets
             </p>
             <p className='flex gap-2'>
-              <input className='w-3' type='checkbox' value={'Seasonal'} onChange={toggleSubCategory}/> Seasonal
+              <input className='w-3' type='checkbox' value={'Capsules'} onChange={toggleSubCategory}/> Capsules
             </p>
             <p className='flex gap-2'>
-              <input className='w-3' type='checkbox' value={'Organic'} onChange={toggleSubCategory}/> Organic
+              <input className='w-3' type='checkbox' value={'Syrups'} onChange={toggleSubCategory}/> Syrups
             </p>
             <p className='flex gap-2'>
-              <input className='w-3' type='checkbox' value={'Import'} onChange={toggleSubCategory}/> Import
+              <input className='w-3' type='checkbox' value={'Injectables'} onChange={toggleSubCategory}/> Injectables
+            </p>
+            <p className='flex gap-2'>
+              <input className='w-3' type='checkbox' value={'Topical'} onChange={toggleSubCategory}/> Topical Applications
+            </p>
+            <p className='flex gap-2'>
+              <input className='w-3' type='checkbox' value={'Drops'} onChange={toggleSubCategory}/> Drops
+            </p>
+            <p className='flex gap-2'>
+              <input className='w-3' type='checkbox' value={'Equipment'} onChange={toggleSubCategory}/> Medical Equipment
             </p>
           </div>
         </div>
-      </div> */}
+      </div>
 
       {/* Products Section */}
       <div className='flex-1'>
