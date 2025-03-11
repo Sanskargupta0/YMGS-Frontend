@@ -18,6 +18,9 @@ const Product = () => {
         if(item._id === productId){
           setProductData(item)
           setImage(item.image[0])
+          if (item.minOrderQuantity && item.minOrderQuantity > 1) {
+            setQuantity(item.minOrderQuantity);
+          }
           return null;
         }
       })
@@ -31,7 +34,8 @@ const Product = () => {
     };
 
     const handleDecreaseQuantity = () => {
-        if (quantity > 1) {
+        const minQuantity = productData.minOrderQuantity || 1;
+        if (quantity > minQuantity) {
             setQuantity(prev => prev - 1);
         }
     };
@@ -85,6 +89,11 @@ const Product = () => {
                 </button>
               </div>
             </div>
+            {productData.minOrderQuantity && productData.minOrderQuantity > 1 && (
+              <div className='text-sm text-orange-600 -mt-2'>
+                Minimum order quantity: {productData.minOrderQuantity}
+              </div>
+            )}
             </div>
           
            

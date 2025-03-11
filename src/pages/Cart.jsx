@@ -66,6 +66,8 @@ const Cart = () => {
             {cartData.map((item, index)=>{
               const productData = products.find((product)=>product._id === item._id);
               if (!productData) return null;
+              
+              const minOrderQuantity = productData.minOrderQuantity || 1;
 
               return (
                 <div key={index} className='py-4 border-t border-b text-gray-700 grid grid-cols-[4fr_0.5fr_0.5fr] sm:grid-cols-[4fr_2fr_0.5fr] items-center gap-4'>
@@ -75,6 +77,9 @@ const Cart = () => {
                       <p className='text-xs sm:text-lg font-medium'>{productData.name}</p>
                       <div className='flex items-center gap-5 mt-2'>
                         <p>{currency}{productData.price}</p>
+                        {minOrderQuantity > 1 && (
+                          <p className='text-xs text-orange-600'>Min qty: {minOrderQuantity}</p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -87,7 +92,7 @@ const Cart = () => {
                     }} 
                     className='border max-w-10 sm:max-w-20 px-1 sm:px-2 py-1' 
                     type='number' 
-                    min={1} 
+                    min={minOrderQuantity} 
                     value={item.quantity} 
                   />
                   <img 

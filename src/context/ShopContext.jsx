@@ -18,6 +18,17 @@ const ShopContextProvider = (props) => {
     const navigate = useNavigate();
 
     const addToCart = async (itemId, quantity = 1) => {
+        // Find the product to check for minimum order quantity
+        const product = products.find(p => p._id === itemId);
+        if (!product) return;
+
+        // Ensure quantity meets minimum order quantity
+        const minQuantity = product.minOrderQuantity || 1;
+        if (quantity < minQuantity) {
+            toast.error(`Minimum order quantity for this product is ${minQuantity}`);
+            quantity = minQuantity;
+        }
+
         let cartData = structuredClone(cartItems);
 
         if(cartData[itemId]){
@@ -56,6 +67,39 @@ const ShopContextProvider = (props) => {
     }
 
     const updateQuantity = async (itemId, quantity) => {
+        // If quantity is 0, remove from cart
+        if (quantity === 0) {
+            let cartData = structuredClone(cartItems);
+            cartData[itemId] = quantity;
+            setCartItem(cartData);
+
+            if (token) {
+                try {
+                    await axios.post(backendUrl + '/api/cart/update', {
+                        itemId, 
+                        quantity
+                    }, {
+                        headers: {token}
+                    });
+                } catch (error) {
+                    console.log(error)
+                    toast.error(error.message)
+                }
+            }
+            return;
+        }
+
+        // Find the product to check for minimum order quantity
+        const product = products.find(p => p._id === itemId);
+        if (!product) return;
+
+        // Ensure quantity meets minimum order quantity
+        const minQuantity = product.minOrderQuantity || 1;
+        if (quantity < minQuantity) {
+            toast.error(`Minimum order quantity for this product is ${minQuantity}`);
+            quantity = minQuantity;
+        }
+
         let cartData = structuredClone(cartItems);
         cartData[itemId] = quantity;
         setCartItem(cartData)
