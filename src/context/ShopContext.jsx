@@ -2,13 +2,14 @@ import { createContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import axios from "axios"
+import PropTypes from 'prop-types';
 
 export const ShopContext = createContext();
 
 const ShopContextProvider = (props) => {
     
     const currency = '$';
-    const delivery_fee = 10;
+    const delivery_fee = 35;
     const backendUrl = import.meta.env.VITE_BACKEND_URL
     const [search, setSearch] = useState('');
     const [showSearch, setShowSearch]= useState(false);
@@ -17,117 +18,178 @@ const ShopContextProvider = (props) => {
     const [token, setToken] = useState('');
     const navigate = useNavigate();
 
-    const addToCart = async (itemId, quantity = 1) => {
+    const addToCart = async (itemId, itemData) => {
+        // Convert old format to new format if needed
+        const cartData = typeof itemData === 'number' ? {
+            quantity: itemData,
+            selectedPrice: null,
+            isPackage: false
+        } : itemData;
+
+        // Validate cart data
+        if (!cartData || typeof cartData !== 'object') {
+            console.error('Invalid cart data');
+            return;
+        }
+
+        // Ensure quantity exists and is a number
+        if (!cartData.quantity || isNaN(cartData.quantity)) {
+            cartData.quantity = 1;
+        }
+
         // Find the product to check for minimum order quantity
         const product = products.find(p => p._id === itemId);
-        if (!product) return;
-
-        // Ensure quantity meets minimum order quantity
-        const minQuantity = product.minOrderQuantity || 1;
-        if (quantity < minQuantity) {
-            toast.error(`Minimum order quantity for this product is ${minQuantity}`);
-            quantity = minQuantity;
+        if (!product) {
+            console.error('Product not found');
+            return;
         }
 
-        let cartData = structuredClone(cartItems);
-
-        if(cartData[itemId]){
-            cartData[itemId] += quantity;
+        // Ensure quantity meets minimum order quantity if not a package
+        if (!cartData.isPackage) {
+            const minQuantity = product.minOrderQuantity || 1;
+            if (cartData.quantity < minQuantity) {
+                toast.error(`Minimum order quantity for this product is ${minQuantity}`);
+                cartData.quantity = minQuantity;
+            }
         }
-        else{
-            cartData[itemId] = quantity;
-        }
-        
-        setCartItem(cartData);
-        toast.success('Item Added to Cart')
 
-        if(token){
-            try {
+        try {
+            let newCartItems = structuredClone(cartItems);
+            newCartItems[itemId] = cartData;
+            setCartItem(newCartItems);
+            toast.success('Item Added to Cart');
+
+            if(token){
                 await axios.post(backendUrl + '/api/cart/add', {
                     itemId, 
-                    quantity
+                    cartData
                 }, {
                     headers: {token}
                 });
-            } catch (error) {
-                console.log(error)
-                toast.error(error.message)
             }
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+            toast.error(error.message || 'Error adding item to cart');
         }
     }
 
     const getCartCount = () => {
         let totalCount = 0;
-        Object.values(cartItems).forEach(quantity => {
-            if (quantity > 0) {
-                totalCount += quantity;
+        Object.values(cartItems).forEach(item => {
+            if (!item) return;
+            
+            if (typeof item === 'object' && item.quantity > 0) {
+                totalCount += item.quantity;
+            } else if (typeof item === 'number' && item > 0) {
+                totalCount += item;
             }
         });
         return totalCount;
     }
 
-    const updateQuantity = async (itemId, quantity) => {
-        // If quantity is 0, remove from cart
-        if (quantity === 0) {
-            let cartData = structuredClone(cartItems);
-            cartData[itemId] = quantity;
-            setCartItem(cartData);
+    const updateQuantity = async (itemId, itemData) => {
+        try {
+            // Convert old format to new format if needed
+            const cartData = typeof itemData === 'number' ? {
+                quantity: itemData,
+                selectedPrice: null,
+                isPackage: false
+            } : itemData;
 
-            if (token) {
-                try {
+            // Validate cart data
+            if (!cartData || typeof cartData !== 'object') {
+                console.error('Invalid cart data');
+                return;
+            }
+
+            // If quantity is 0 or invalid, remove from cart
+            if (!cartData.quantity || cartData.quantity === 0) {
+                let newCartItems = structuredClone(cartItems);
+                delete newCartItems[itemId];
+                setCartItem(newCartItems);
+
+                if (token) {
                     await axios.post(backendUrl + '/api/cart/update', {
                         itemId, 
-                        quantity
+                        cartData: { quantity: 0 }
                     }, {
                         headers: {token}
                     });
-                } catch (error) {
-                    console.log(error)
-                    toast.error(error.message)
+                }
+                return;
+            }
+
+            // Find the product to check for minimum order quantity
+            const product = products.find(p => p._id === itemId);
+            if (!product) {
+                console.error('Product not found');
+                return;
+            }
+
+            // Ensure quantity meets minimum order quantity if not a package
+            if (!cartData.isPackage) {
+                const minQuantity = product.minOrderQuantity || 1;
+                if (cartData.quantity < minQuantity) {
+                    toast.error(`Minimum order quantity for this product is ${minQuantity}`);
+                    cartData.quantity = minQuantity;
                 }
             }
-            return;
-        }
 
-        // Find the product to check for minimum order quantity
-        const product = products.find(p => p._id === itemId);
-        if (!product) return;
+            let newCartItems = structuredClone(cartItems);
+            newCartItems[itemId] = cartData;
+            setCartItem(newCartItems);
 
-        // Ensure quantity meets minimum order quantity
-        const minQuantity = product.minOrderQuantity || 1;
-        if (quantity < minQuantity) {
-            toast.error(`Minimum order quantity for this product is ${minQuantity}`);
-            quantity = minQuantity;
-        }
-
-        let cartData = structuredClone(cartItems);
-        cartData[itemId] = quantity;
-        setCartItem(cartData)
-
-        if (token) {
-            try {
+            if (token) {
                 await axios.post(backendUrl + '/api/cart/update', {
                     itemId, 
-                    quantity
+                    cartData
                 }, {
                     headers: {token}
                 });
-            } catch (error) {
-                console.log(error)
-                toast.error(error.message)
             }
+        } catch (error) {
+            console.error('Error updating quantity:', error);
+            toast.error(error.message || 'Error updating quantity');
         }
     }
 
     const getCartAmount = () => {
         let totalAmount = 0;
         for(const itemId in cartItems){
-            let itemInfo = products.find((product)=>product._id === itemId);
-            if (itemInfo && cartItems[itemId] > 0) {
-                totalAmount += itemInfo.price * cartItems[itemId];
+            const item = cartItems[itemId];
+            if (!item) continue;
+
+            if (typeof item === 'object' && item.isPackage && item.selectedPrice) {
+                // For package items, just add the package price (no multiplication)
+                totalAmount += parseFloat(item.selectedPrice);
+            } else {
+                // For regular items, multiply price by quantity
+                const quantity = typeof item === 'object' ? item.quantity : item;
+                if (quantity <= 0) continue;
+
+                const product = products.find((p) => p._id === itemId);
+                const price = product ? parseFloat(product.price) : 0;
+                totalAmount += price * quantity;
             }
         }
-        return totalAmount;
+        return Math.round(totalAmount * 100) / 100; // Round to 2 decimal places
+    }
+
+    // Helper function to get individual item total
+    const getItemTotal = (itemId) => {
+        const item = cartItems[itemId];
+        if (!item) return 0;
+
+        if (typeof item === 'object' && item.isPackage && item.selectedPrice) {
+            // For package items, return package price
+            return parseFloat(item.selectedPrice);
+        } else {
+            // For regular items, multiply price by quantity
+            const quantity = typeof item === 'object' ? item.quantity : item;
+            const product = products.find((p) => p._id === itemId);
+            const price = product ? parseFloat(product.price) : 0;
+            return price * quantity;
+        }
     }
 
     const getProductsData = async () => {
@@ -148,14 +210,8 @@ const ShopContextProvider = (props) => {
     const getUserCart = async (token) => {
         try {
             const response = await axios.post(backendUrl + '/api/cart/get', {}, {headers:{token}})
-
             if (response.data.success) {
-                const normalizedCart = {};
-                Object.entries(response.data.cartData).forEach(([key, value]) => {
-                    normalizedCart[key] = typeof value === 'number' ? value : 
-                                        (typeof value === 'object' ? Object.values(value)[0] || 0 : 0);
-                });
-                setCartItem(normalizedCart);
+                setCartItem(response.data.cartData);
             }
         } catch (error) {
             console.log(error)
@@ -166,16 +222,27 @@ const ShopContextProvider = (props) => {
     const getCartItems = () => {
         const items = [];
         for(const itemId in cartItems) {
+            const item = cartItems[itemId];
+            if (!item) continue;
+
             const product = products.find(p => p._id === itemId);
-            if (product && cartItems[itemId] > 0) {
-                items.push({
-                    _id: itemId,
-                    name: product.name,
-                    price: product.price,
-                    image: product.image[0],
-                    quantity: cartItems[itemId]
-                });
-            }
+            if (!product) continue;
+
+            const quantity = typeof item === 'object' ? item.quantity : item;
+            if (quantity <= 0) continue;
+
+            const price = typeof item === 'object' && item.selectedPrice 
+                ? item.selectedPrice 
+                : product.price;
+
+            items.push({
+                _id: itemId,
+                name: product.name,
+                price: price,
+                image: product.image[0],
+                quantity: quantity,
+                isPackage: typeof item === 'object' ? item.isPackage : false
+            });
         }
         return items;
     }
@@ -197,7 +264,7 @@ const ShopContextProvider = (props) => {
         cartItems, addToCart, setCartItem,
         getCartCount, updateQuantity,
         getCartAmount, navigate, backendUrl,
-        setToken, token, getCartItems
+        setToken, token, getCartItems, getItemTotal
     }
 
     return(
@@ -206,6 +273,10 @@ const ShopContextProvider = (props) => {
         </ShopContext.Provider>
     )
 }
+
+ShopContextProvider.propTypes = {
+    children: PropTypes.node.isRequired
+};
 
 export default ShopContextProvider;
 

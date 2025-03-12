@@ -268,7 +268,7 @@ const PlaceOrder = () => {
         <div className='mt-12'>
           <Title text1={'PAYMENT'} text2={'METHOD'}/>
           {/*------------------payment--------------------*/}
-          <div className='flex gap-3 flex-col lg:flex-row'>
+          <div className='flex gap-3 flex-col mt-4 lg:flex-row'>
           
 
             {/* Razorpay payment */}
@@ -278,15 +278,6 @@ const PlaceOrder = () => {
             >
               <p className={`min-w-3.5 h-3.5 border dark:border-gray-500 rounded-full ${method === 'razorpay' ? 'bg-green-500':''}`}></p>
               <img className='h-5 mx-4' src={assets.razorpay_logo} alt="Razorpay" />
-            </div>
-
-            {/* COD payment */}
-            <div 
-              onClick={() => handleMethodChange('cod')} 
-              className='flex items-center gap-3 border dark:border-gray-600 p-2 px-3 cursor-pointer hover:border-green-500 dark:hover:border-green-500 transition-colors dark:bg-gray-700'
-            >
-              <p className={`min-w-3.5 h-3.5 border dark:border-gray-500 rounded-full ${method === 'cod' ? 'bg-green-500':''}`}></p>
-              <p className='text-gray-500 dark:text-gray-300 text-sm font-medium mx-4'>CASH ON DELIVERY</p>
             </div>
               {/* Stripe payment (disabled) */}
               <div className='flex items-center gap-3 border dark:border-gray-700 p-2 px-3 cursor-not-allowed opacity-50 bg-gray-50 dark:bg-gray-600'>

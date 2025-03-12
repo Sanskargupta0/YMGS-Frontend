@@ -11,6 +11,7 @@ const Product = () => {
     const [productData, setProductData] = useState(false);
     const [image, setImage] = useState('');
     const [quantity, setQuantity] = useState(1);
+    const [selectedQuantityPrice, setSelectedQuantityPrice] = useState(null);
  
     
     const fetchProductData = async () => {
@@ -30,14 +31,28 @@ const Product = () => {
     }, [productId, products])
     
     const handleIncreaseQuantity = () => {
+        if (selectedQuantityPrice) return; // Disable manual quantity change when preset is selected
         setQuantity(prev => prev + 1);
     };
 
     const handleDecreaseQuantity = () => {
+        if (selectedQuantityPrice) return; // Disable manual quantity change when preset is selected
         const minQuantity = productData.minOrderQuantity || 1;
         if (quantity > minQuantity) {
             setQuantity(prev => prev - 1);
         }
+    };
+
+    const handleQuantityPriceSelect = (qp) => {
+        setSelectedQuantityPrice(qp);
+        setQuantity(parseInt(qp.quantity));
+    };
+
+    const getCurrentPrice = () => {
+        if (selectedQuantityPrice) {
+            return selectedQuantityPrice.price;
+        }
+        return productData.price;
     };
 
   return productData ? (
@@ -68,37 +83,69 @@ const Product = () => {
               <img src={assets.star_dull_icon} alt="" className="w-3 5" />
               <p className='pl-2 dark:text-gray-300'>(122)</p>
             </div>
-            <p className='mt-5 text-3xl font-medium dark:text-white'>{currency}{productData.price}</p>
+            <p className='mt-5 text-3xl font-medium dark:text-white'>{currency}{getCurrentPrice()}</p>
             <p className='mt-5 text-gray-500 dark:text-gray-300 md:w-4/5'>{productData.description}</p>
-            <div className='flex flex-col gap-4 my-8 '>
-            <div className='flex items-center gap-4 mb-4'>
-              <span className='text-gray-600 dark:text-gray-300'>Quantity:</span>
-              <div className='flex items-center border border-gray-300 dark:border-gray-600'>
-                <button 
-                  onClick={handleDecreaseQuantity}
-                  className='px-3 py-1 border-r border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white'
-                >
-                  -
-                </button>
-                <span className='px-4 py-1 dark:text-white'>{quantity}</span>
-                <button 
-                  onClick={handleIncreaseQuantity}
-                  className='px-3 py-1 border-l border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white'
-                >
-                  +
-                </button>
-              </div>
-            </div>
-            {productData.minOrderQuantity && productData.minOrderQuantity > 1 && (
-              <div className='text-sm text-orange-600 -mt-2'>
-                Minimum order quantity: {productData.minOrderQuantity}
+            
+            {/* Quantity Price List */}
+            {productData.quantityPriceList && (
+              <div className='my-6'>
+                <p className='text-gray-600 dark:text-gray-300 mb-3'>Select Quantity Package:</p>
+                <div className='grid grid-cols-2 gap-3'>
+                  {JSON.parse(productData.quantityPriceList).map((qp, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleQuantityPriceSelect(qp)}
+                      className={`p-3 border ${
+                        selectedQuantityPrice === qp 
+                          ? 'border-black dark:border-yellow-400 bg-black dark:bg-yellow-400 text-white dark:text-gray-800' 
+                          : 'border-gray-300 dark:border-gray-600 hover:border-black dark:hover:border-yellow-400'
+                      }`}
+                    >
+                      {qp.quantity} pills - {currency}{qp.price}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
+
+            <div className='flex flex-col gap-4 my-8'>
+              {!selectedQuantityPrice && (
+                <div className='flex items-center gap-4 mb-4'>
+                  <span className='text-gray-600 dark:text-gray-300'>Quantity:</span>
+                  <div className='flex items-center border border-gray-300 dark:border-gray-600'>
+                    <button 
+                      onClick={handleDecreaseQuantity}
+                      className='px-3 py-1 border-r border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white'
+                    >
+                      -
+                    </button>
+                    <span className='px-4 py-1 dark:text-white'>{quantity}</span>
+                    <button 
+                      onClick={handleIncreaseQuantity}
+                      className='px-3 py-1 border-l border-gray-300 dark:border-gray-600 hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-white'
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              )}
+              {productData.minOrderQuantity && productData.minOrderQuantity > 1 && !selectedQuantityPrice && (
+                <div className='text-sm text-orange-600 -mt-2'>
+                  Minimum order quantity: {productData.minOrderQuantity}
+                </div>
+              )}
             </div>
-          
-           
+            
             <button 
-              onClick={() => addToCart(productData._id, quantity)} 
+              onClick={() => {
+                const cartItem = {
+                  quantity: quantity,
+                  selectedPrice: selectedQuantityPrice ? selectedQuantityPrice.price : productData.price,
+                  isPackage: !!selectedQuantityPrice
+                };
+                addToCart(productData._id, cartItem);
+                setSelectedQuantityPrice(null);
+              }} 
               className='bg-black text-white px-8 py-3 text-sm active:bg-gray-700 dark:bg-yellow-400 dark:text-gray-800 dark:hover:bg-yellow-500'
             >
               ADD TO CART
