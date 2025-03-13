@@ -266,6 +266,34 @@ const Product = () => {
           >
             ADD TO CART
           </button>
+          <button 
+            onClick={() => {
+              const cartItem = {
+                quantity: quantity,
+                selectedPrice: selectedQuantityPrice ? selectedQuantityPrice.price : productData.price,
+                isPackage: !!selectedQuantityPrice
+              };
+              addToCart(productData._id, cartItem);
+              
+              // If product has quantity price list, reselect the smallest package
+              if (productData.quantityPriceList) {
+                const priceList = getParsedQuantityPriceList();
+                if (priceList.length > 0) {
+                  const smallestPackage = priceList.reduce((min, current) => 
+                    parseInt(current.quantity) < parseInt(min.quantity) ? current : min
+                  , priceList[0]);
+                  setSelectedQuantityPrice(smallestPackage);
+                  setQuantity(parseInt(smallestPackage.quantity));
+                }
+              } else {
+                setSelectedQuantityPrice(null);
+              }
+              navigate("/cart")
+            }} 
+            className='bg-black text-white mx-4 px-8 py-3 text-sm active:bg-gray-700 dark:bg-yellow-400 dark:text-gray-800 dark:hover:bg-yellow-500'
+          >
+            BUY NOW
+          </button>
           
           <p className='mt-5 text-gray-500 dark:text-gray-300 md:w-4/5'>{productData.description}</p>
           <hr className='mt-8 sm:w-4/5 dark:border-gray-700'/>

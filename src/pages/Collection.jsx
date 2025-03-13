@@ -54,13 +54,6 @@ const Collection = () => {
       setInitialized(true);
     }
   }, [initialized, updateFilters]);
-
-  // Debug logs to help troubleshoot
-  useEffect(() => {
-    console.log("Products:", products);
-    console.log("Current filters:", filters);
-    console.log("Loading state:", loading);
-  }, [products, filters, loading]);
   
   const handleCategoryToggle = (value) => {
     let newCategories;

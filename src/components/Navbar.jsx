@@ -31,8 +31,8 @@ const NavBar = () => {
             <hr className='w-2/4 border-none h-[1.5px] bg-gray-700 dark:bg-gray-300 hidden'/>
         </NavLink>
 
-        <NavLink to='/about' className='flex flex-col items-center gap-1 hover:text-primary dark:hover:text-yellow-400'>
-            <p>ABOUT</p>
+        <NavLink to='/orders' className='flex flex-col items-center gap-1 hover:text-primary dark:hover:text-yellow-400'>
+            <p>ORDER</p>
             <hr className='w-2/4 border-none h-[1.5px] bg-gray-700 dark:bg-gray-300 hidden'/>
         </NavLink>
 
@@ -73,7 +73,7 @@ const NavBar = () => {
             </div>
             <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700' to='/'>HOME</NavLink>
             <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700' to='/collection'>COLLECTION</NavLink>
-            <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700' to='/about'>ABOUT</NavLink>
+            <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700' to='/orders'>ORDER</NavLink>
             <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700' to='/contact'>CONTACT</NavLink>
         </div>
       </div>

@@ -14,7 +14,7 @@ const PlaceOrder = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [cryptoWalletAddress] = useState(
     "0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7"
-  ); // Example wallet address
+  ); 
   const {
     navigate,
     backendUrl,
@@ -73,6 +73,7 @@ const PlaceOrder = () => {
       if (
         !formData.firstName ||
         !formData.lastName ||
+        !formData.email ||
         !formData.street ||
         !formData.city ||
         !formData.state ||
@@ -329,11 +330,13 @@ const PlaceOrder = () => {
                     <p>
                       {address.firstName} {address.lastName}
                     </p>
+                    <p>{address.email}</p>
                     <p>{address.street}</p>
                     <p>
                       {address.city}, {address.state} {address.zipcode}
                     </p>
                     <p>{address.country}</p>
+                    <p>{address.phone}</p>
                   </div>
                 ))}
               </div>
