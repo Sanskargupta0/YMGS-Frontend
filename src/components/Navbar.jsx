@@ -18,7 +18,7 @@ const NavBar = () => {
     return (
     <div className='flex items-center justify-between py-5 font-medium bg-white dark:bg-gray-800 transition-colors'>
        <Link to="/" className="font-display text-2xl text-primary dark:text-yellow-400">
-            YMGS
+            YMGS pharmacy
           </Link>
       <ul className='hidden sm:flex gap-5 text-sm text-gray-700 dark:text-gray-200'>
         <NavLink to='/' className='flex flex-col items-center gap-1 hover:text-primary dark:hover:text-yellow-400'>

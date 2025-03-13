@@ -16,7 +16,7 @@ const Hero = () => {
               Your Trusted Online Medicine & Healthcare Partner
             </h1>
             <p className="mt-6 text-gray-600 dark:text-gray-300 text-lg">
-              YMGS brings quality healthcare to your doorstep. Order medicines, health supplements, and medical supplies with just a few clicks.
+              YMGS pharmacy brings quality healthcare to your doorstep. Order medicines, health supplements, and medical supplies with just a few clicks.
             </p>
             <button onClick={() => navigate('/collection')} className="mt-8 bg-primary dark:bg-yellow-400 text-white dark:text-gray-800 px-8 py-3 rounded-full font-medium inline-flex items-center gap-2 hover:bg-primary/90 dark:hover:bg-yellow-500 transition-colors">
               Order Medicines

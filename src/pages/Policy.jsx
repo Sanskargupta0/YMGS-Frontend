@@ -26,7 +26,7 @@ const Policy = () => {
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center gap-2">
               <ScrollText className="text-primary" size={24} />
-              <h2 className="text-xl font-semibold">YMGS Terms and Conditions</h2>
+              <h2 className="text-xl font-semibold">YMGS pharmacy Terms and Conditions</h2>
             </div>
             <button 
               onClick={copyToClipboard}
@@ -42,7 +42,7 @@ const Policy = () => {
               <ShieldCheck className="text-primary flex-shrink-0 mt-1" size={20} />
               <div>
                 <h3 className="font-semibold text-gray-800 mb-2">1. Acceptance of Terms</h3>
-                <p>By accessing or using YMGS Medicine services, you agree to be bound by these Terms and Conditions. If you do not agree to all the terms and conditions, you may not access or use our services.</p>
+                <p>By accessing or using YMGS pharmacy Medicine services, you agree to be bound by these Terms and Conditions. If you do not agree to all the terms and conditions, you may not access or use our services.</p>
               </div>
             </div>
 
@@ -50,7 +50,7 @@ const Policy = () => {
               <Truck className="text-primary flex-shrink-0 mt-1" size={20} />
               <div>
                 <h3 className="font-semibold text-gray-800 mb-2">2. Delivery Policy</h3>
-                <p>YMGS strives to deliver medicines within the estimated delivery time. However, delivery times may vary based on location and availability. For prescription medications, a valid prescription is required before processing the order.</p>
+                <p>YMGS pharmacy strives to deliver medicines within the estimated delivery time. However, delivery times may vary based on location and availability. For prescription medications, a valid prescription is required before processing the order.</p>
                 <ul className="list-disc ml-5 mt-2 space-y-1">
                   <li>Standard delivery: 2-3 business days</li>
                   <li>Express delivery: 24 hours (where available)</li>
@@ -86,7 +86,7 @@ const Policy = () => {
               <FileWarning className="text-primary flex-shrink-0 mt-1" size={20} />
               <div>
                 <h3 className="font-semibold text-gray-800 mb-2">5. Disclaimer of Warranties</h3>
-                <p>YMGS provides information on medicines for general informational purposes only. This information should not be considered as medical advice. Always consult with a qualified healthcare provider for medical advice, diagnosis, or treatment.</p>
+                <p>YMGS pharmacy provides information on medicines for general informational purposes only. This information should not be considered as medical advice. Always consult with a qualified healthcare provider for medical advice, diagnosis, or treatment.</p>
                 <p className="mt-2">We make no warranties or representations about the accuracy or completeness of the content provided on our website.</p>
               </div>
             </div>
@@ -97,7 +97,7 @@ const Policy = () => {
                 <h3 className="font-semibold text-gray-800 mb-2">6. Customer Support</h3>
                 <p>Our customer support team is available from Monday to Saturday, 9:00 AM to 6:00 PM IST. You can reach us through:</p>
                 <ul className="list-disc ml-5 mt-2 space-y-1">
-                  <li>Email: support@ymgs.com</li>
+                  <li>Email: support@YMGS pharmacy.com</li>
                   <li>Phone: +91 9919919911</li>
                   <li>Chat support on our website</li>
                 </ul>
@@ -116,7 +116,7 @@ const Policy = () => {
 
         <div className="bg-gray-50 rounded-lg p-6 border border-gray-200">
           <p className="text-sm text-gray-500 text-center">
-            Last updated: March 2025. YMGS reserves the right to modify these terms and conditions at any time. 
+            Last updated: March 2025. YMGS pharmacy reserves the right to modify these terms and conditions at any time. 
             Continued use of our services after any modifications indicates your acceptance of the updated terms.
           </p>
         </div>

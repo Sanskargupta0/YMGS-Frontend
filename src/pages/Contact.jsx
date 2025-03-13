@@ -108,7 +108,7 @@ const Contact = () => {
 
             <div className='flex items-center gap-3 text-gray-600 dark:text-gray-300'>
               <Mail className='text-primary dark:text-yellow-400' size={20} />
-              <p>support@YMGS.com</p>
+              <p>support@YMGS pharmacy.com</p>
             </div>
 
             <div className='flex items-center gap-3 text-gray-600 dark:text-gray-300'>

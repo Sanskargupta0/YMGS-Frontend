@@ -35,9 +35,6 @@ const ShopContextProvider = (props) => {
 
     // Function to update filters and fetch products
     const updateFilters = (newFilters) => {
-        // Debug log to help troubleshoot
-        console.log("Updating filters with:", newFilters);
-        
         // Create new filters by merging existing filters with new ones
         const updatedFilters = {
             ...filters,
@@ -60,9 +57,7 @@ const ShopContextProvider = (props) => {
     // A helper function to immediately fetch with the given filters
     const fetchProductsWithCurrentFilters = async (currentFilters) => {
         try {
-            setLoading(true);
-            console.log("Fetching products with filters:", currentFilters);
-            
+            setLoading(true);            
             // Use the new user-specific endpoint
             const response = await axios.post(backendUrl + '/api/product/user/list', {
                 page: 1, // Always start at page 1 for a new filter set
@@ -72,7 +67,6 @@ const ShopContextProvider = (props) => {
             });
             
             if (response.data.success) {
-                console.log("Fetched products:", response.data.products);
                 setProducts(response.data.products);
                 setProductsPagination({
                     total: response.data.pagination.total,
@@ -96,7 +90,6 @@ const ShopContextProvider = (props) => {
         if (page < 1 || page > productsPagination.pages) return;
         
         const newPage = parseInt(page);
-        console.log("Setting page to:", newPage);
         
         setProductsPagination(prev => ({
             ...prev,
@@ -121,7 +114,6 @@ const ShopContextProvider = (props) => {
             });
             
             if (response.data.success) {
-                console.log("Fetched products for page:", page, response.data.products);
                 setProducts(response.data.products);
                 setProductsPagination({
                     total: response.data.pagination.total,
@@ -415,7 +407,34 @@ const ShopContextProvider = (props) => {
         try {
             const response = await axios.post(backendUrl + '/api/cart/get', {}, {headers:{token}});
             if (response.data.success) {
-                setCartItem(response.data.cartData);
+                // Make sure we're setting the complete cart data structure
+                const cartData = response.data.cartData || {};
+                
+                // Validate the structure of each cart item
+                Object.entries(cartData).forEach(([itemId, item]) => {
+                    // Skip null or undefined items
+                    if (item === null || item === undefined) {
+                        delete cartData[itemId];
+                        return;
+                    }
+                    
+                    // If the item is in old format (just a number), convert it to new format
+                    if (typeof item === 'number') {
+                        cartData[itemId] = {
+                            quantity: item,
+                            selectedPrice: null,
+                            isPackage: false
+                        };
+                    } 
+                    // If the item exists but has missing properties, ensure they exist
+                    else if (typeof item === 'object') {
+                        if (!Object.prototype.hasOwnProperty.call(item, 'quantity')) item.quantity = 1;
+                        if (!Object.prototype.hasOwnProperty.call(item, 'selectedPrice')) item.selectedPrice = null;
+                        if (!Object.prototype.hasOwnProperty.call(item, 'isPackage')) item.isPackage = false;
+                    }
+                });
+                
+                setCartItem(cartData);
             }
         } catch (error) {
             console.log(error);
