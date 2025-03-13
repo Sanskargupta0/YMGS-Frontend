@@ -14,7 +14,7 @@ const PlaceOrder = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [cryptoWalletAddress] = useState(
     "0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7"
-  ); 
+  );
   const {
     navigate,
     backendUrl,
@@ -88,7 +88,15 @@ const PlaceOrder = () => {
       const { data } = await axios.post(
         `${backendUrl}/api/address/save`,
         {
-          address: formData,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          street: formData.street,
+          city: formData.city,
+          state: formData.state,
+          zipcode: formData.zipcode,
+          country: formData.country,
+          phone: formData.phone,
           userId: token, // Add userId to the request body
         },
         {
@@ -183,8 +191,20 @@ const PlaceOrder = () => {
     try {
       const items = getCartItems(); // Get formatted cart items
 
+      let address = {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        street: formData.street,
+        city: formData.city,
+        state: formData.state,
+        zipcode: formData.zipcode,
+        country: formData.country,
+        phone: formData.phone,
+      };
+
       let orderData = {
-        address: showAddressForm ? formData : selectedAddress,
+        address: showAddressForm ? address : selectedAddress,
         items: items,
         amount: getCartAmount() + delivery_fee,
       };
@@ -616,7 +636,7 @@ const PlaceOrder = () => {
                         Payment Type
                       </label>
                       <select
-                      required
+                        required
                         onChange={(e) =>
                           setFormData((prev) => ({
                             ...prev,

@@ -1,0 +1,536 @@
+import { useState, useContext } from "react";
+import { ShopContext } from "../context/ShopContext";
+import Title from "../components/Title";
+import CartTotal from "../components/CartTotal";
+import axios from "axios";
+import { toast } from "react-toastify";
+
+const GuestCheckout = () => {
+  const [method, setMethod] = useState("manual");
+  const [isLoading, setIsLoading] = useState(false);
+  const [cryptoWalletAddress] = useState("0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7");
+  const { navigate, backendUrl, setCartItem, getCartAmount, delivery_fee, getCartItems } = useContext(ShopContext);
+  
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    street: "",
+    city: "",
+    state: "",
+    zipcode: "",
+    country: "",
+    phone: "",
+    manualPaymentDetails: {
+      paymentType: "",
+      cardNumber: "",
+      cardHolderName: "",
+      expiryDate: "",
+      cvv: "",
+      paypalEmail: "",
+      cryptoTransactionId: "",
+    },
+  });
+
+  // Copy crypto wallet address to clipboard
+  const copyWalletAddress = () => {
+    navigator.clipboard.writeText(cryptoWalletAddress);
+    toast.info("Wallet address copied to clipboard");
+  };
+
+  const handleMethodChange = (newMethod, paymentType = "") => {
+    setMethod(newMethod);
+
+    // Set the payment type if it's a manual payment method
+    if (newMethod === "manual" && paymentType) {
+      setFormData((prev) => ({
+        ...prev,
+        manualPaymentDetails: {
+          ...prev.manualPaymentDetails,
+          paymentType: paymentType,
+        },
+      }));
+    }
+  };
+
+  const onChangeHandler = (event) => {
+    const name = event.target.name;
+    const value = event.target.value;
+    setFormData((data) => ({ ...data, [name]: value }));
+  };
+
+  const onSubmitHandler = async (event) => {
+    event.preventDefault();
+    
+    // Form validation
+    if (
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.email ||
+      !formData.street ||
+      !formData.city ||
+      !formData.state ||
+      !formData.zipcode ||
+      !formData.country ||
+      !formData.phone
+    ) {
+      toast.error("Please fill all required fields");
+      return;
+    }
+
+    // Payment method validation
+    if (method === "manual") {
+      if (!formData.manualPaymentDetails?.paymentType) {
+        toast.error("Please select a payment type");
+        return;
+      }
+
+      if (
+        formData.manualPaymentDetails.paymentType === "paypal" &&
+        !formData.manualPaymentDetails.paypalEmail
+      ) {
+        toast.error("Please enter your PayPal email");
+        return;
+      }
+
+      if (
+        ["credit_card", "debit_card"].includes(
+          formData.manualPaymentDetails.paymentType
+        )
+      ) {
+        if (
+          !formData.manualPaymentDetails.cardNumber ||
+          !formData.manualPaymentDetails.cardHolderName ||
+          !formData.manualPaymentDetails.expiryDate ||
+          !formData.manualPaymentDetails.cvv
+        ) {
+          toast.error("Please fill in all card details");
+          return;
+        }
+      }
+    }
+
+    try {
+      setIsLoading(true);
+      const items = getCartItems(); // Get formatted cart items
+      let address ={
+        firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          street: formData.street,
+          city: formData.city,
+          state: formData.state,
+          zipcode: formData.zipcode,
+          country: formData.country,
+          phone: formData.phone
+      }
+      const orderData = {
+        address: address,
+        items: items,
+        amount: getCartAmount() + delivery_fee,
+        isGuest: true,
+        manualPaymentDetails: method === "manual" ? formData.manualPaymentDetails : undefined
+      };
+
+      // Call the API endpoint for guest orders
+      const response = await axios.post(
+        backendUrl + "/api/order/guest",
+        orderData
+      );
+      
+      if (response.data.success) {
+        setCartItem({});
+        toast.success("Order placed successfully!");
+        navigate("/"); // Redirect to home page after successful order
+      } else {
+        toast.error(response.data.message || "Failed to place order");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response?.data?.message || "Failed to place order");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <form
+      onSubmit={onSubmitHandler}
+      className="flex flex-col sm:flex-row justify-between gap-4 pt-5 sm:pt-14 min-h-[80vh] border-t dark:border-gray-700 dark:bg-gray-800"
+    >
+      {/* Left side - Customer Information */}
+      <div className="flex flex-col gap-4 w-full sm:max-w-[480px]">
+        <div className="text-xl sm:text-2xl my-3">
+          <Title text1={"GUEST"} text2={"CHECKOUT"} />
+        </div>
+        
+        <p className="text-gray-600 dark:text-gray-300 mb-4">
+          Fill in your information below to place your order without creating an account.
+        </p>
+        
+        <div className="flex gap-3">
+          <input
+            required
+            onChange={onChangeHandler}
+            name="firstName"
+            value={formData.firstName}
+            className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded py-1.5 px-3.5 w-full"
+            type="text"
+            placeholder="First name"
+          />
+          <input
+            required
+            onChange={onChangeHandler}
+            name="lastName"
+            value={formData.lastName}
+            className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded py-1.5 px-3.5 w-full"
+            type="text"
+            placeholder="Last name"
+          />
+        </div>
+        <input
+          required
+          onChange={onChangeHandler}
+          name="email"
+          value={formData.email}
+          className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded py-1.5 px-3.5 w-full"
+          type="email"
+          placeholder="E-mail Address"
+        />
+        <input
+          required
+          onChange={onChangeHandler}
+          name="street"
+          value={formData.street}
+          className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded py-1.5 px-3.5 w-full"
+          type="text"
+          placeholder="Street"
+        />
+        <div className="flex gap-3">
+          <input
+            required
+            onChange={onChangeHandler}
+            name="city"
+            value={formData.city}
+            className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded py-1.5 px-3.5 w-full"
+            type="text"
+            placeholder="City"
+          />
+          <input
+            required
+            onChange={onChangeHandler}
+            name="state"
+            value={formData.state}
+            className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded py-1.5 px-3.5 w-full"
+            type="text"
+            placeholder="State"
+          />
+        </div>
+        <div className="flex gap-3">
+          <input
+            required
+            onChange={onChangeHandler}
+            name="zipcode"
+            value={formData.zipcode}
+            className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded py-1.5 px-3.5 w-full"
+            type="number"
+            placeholder="Area PIN-CODE"
+          />
+          <input
+            required
+            onChange={onChangeHandler}
+            name="country"
+            value={formData.country}
+            className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded py-1.5 px-3.5 w-full"
+            type="text"
+            placeholder="Country"
+          />
+        </div>
+        <input
+          required
+          onChange={onChangeHandler}
+          name="phone"
+          value={formData.phone}
+          className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded py-1.5 px-3.5 w-full"
+          type="number"
+          placeholder="Mobile Number"
+        />
+      </div>
+
+      {/* Right side - Payment Information */}
+      <div className="mt-8">
+        <div className="mt-8 min-w-80">
+          <CartTotal />
+        </div>
+        <div className="mt-12">
+          <Title text1={"PAYMENT"} text2={"METHOD"} />
+          
+          {/* Payment Methods */}
+          <div className="flex gap-3 flex-col mt-4">
+            {/* PayPal payment */}
+            <div
+              onClick={() => handleMethodChange("manual", "paypal")}
+              className="flex items-center gap-3 border dark:border-gray-600 p-2 px-3 cursor-pointer hover:border-green-500 dark:hover:border-green-500 transition-colors dark:bg-gray-700"
+            >
+              <p
+                className={`min-w-3.5 h-3.5 border dark:border-gray-500 rounded-full ${
+                  method === "manual" &&
+                  formData.manualPaymentDetails.paymentType === "paypal"
+                    ? "bg-green-500"
+                    : ""
+                }`}
+              ></p>
+              <p className="dark:text-gray-200">PayPal</p>
+            </div>
+
+            {/* Credit/Debit Card payment */}
+            <div
+              onClick={() => handleMethodChange("manual", "credit_card")}
+              className="flex items-center gap-3 border dark:border-gray-600 p-2 px-3 cursor-pointer hover:border-green-500 dark:hover:border-green-500 transition-colors dark:bg-gray-700"
+            >
+              <p
+                className={`min-w-3.5 h-3.5 border dark:border-gray-500 rounded-full ${
+                  method === "manual" &&
+                  ["credit_card", "debit_card"].includes(
+                    formData.manualPaymentDetails.paymentType
+                  )
+                    ? "bg-green-500"
+                    : ""
+                }`}
+              ></p>
+              <p className="dark:text-gray-200">Credit/Debit Card</p>
+            </div>
+
+            {/* Crypto payment */}
+            <div
+              onClick={() => handleMethodChange("manual", "crypto")}
+              className="flex items-center gap-3 border dark:border-gray-600 p-2 px-3 cursor-pointer hover:border-green-500 dark:hover:border-green-500 transition-colors dark:bg-gray-700"
+            >
+              <p
+                className={`min-w-3.5 h-3.5 border dark:border-gray-500 rounded-full ${
+                  method === "manual" &&
+                  formData.manualPaymentDetails.paymentType === "crypto"
+                    ? "bg-green-500"
+                    : ""
+                }`}
+              ></p>
+              <p className="dark:text-gray-200">Crypto</p>
+            </div>
+          </div>
+
+          {/* Manual Payment Form */}
+          {method === "manual" && (
+            <div className="mt-6 border dark:border-gray-600 p-4 rounded dark:bg-gray-700">
+              <h3 className="text-lg font-medium mb-4 dark:text-gray-200">
+                Payment Details
+              </h3>
+
+              {/* PayPal Email Form */}
+              {formData.manualPaymentDetails?.paymentType === "paypal" && (
+                <div>
+                  <label className="block text-sm font-medium mb-2 dark:text-gray-300">
+                    PayPal Email
+                  </label>
+                  <input
+                    type="email"
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        manualPaymentDetails: {
+                          ...prev.manualPaymentDetails,
+                          paypalEmail: e.target.value,
+                        },
+                      }))
+                    }
+                    className="w-full border dark:border-gray-600 rounded py-2 px-3 dark:bg-gray-800 dark:text-white"
+                    placeholder="PayPal Email Address"
+                  />
+                </div>
+              )}
+
+              {/* Card Details Form */}
+              {formData.manualPaymentDetails?.paymentType &&
+                ["credit_card", "debit_card"].includes(
+                  formData.manualPaymentDetails.paymentType
+                ) && (
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2 dark:text-gray-300">
+                        Payment Type
+                      </label>
+                      <select
+                        required
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            manualPaymentDetails: {
+                              ...prev.manualPaymentDetails,
+                              paymentType: e.target.value,
+                            },
+                          }))
+                        }
+                        className="w-full border dark:border-gray-600 rounded py-2 px-3 dark:bg-gray-800 dark:text-white"
+                      >
+                        <option value="">Select Payment Type</option>
+                        <option value="credit_card">Credit Card</option>
+                        <option value="debit_card">Debit Card</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2 dark:text-gray-300">
+                        Card Number
+                      </label>
+                      <input
+                        type="text"
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            manualPaymentDetails: {
+                              ...prev.manualPaymentDetails,
+                              cardNumber: e.target.value,
+                            },
+                          }))
+                        }
+                        className="w-full border dark:border-gray-600 rounded py-2 px-3 dark:bg-gray-800 dark:text-white"
+                        placeholder="Card Number"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium mb-2 dark:text-gray-300">
+                        Card Holder Name
+                      </label>
+                      <input
+                        type="text"
+                        onChange={(e) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            manualPaymentDetails: {
+                              ...prev.manualPaymentDetails,
+                              cardHolderName: e.target.value,
+                            },
+                          }))
+                        }
+                        className="w-full border dark:border-gray-600 rounded py-2 px-3 dark:bg-gray-800 dark:text-white"
+                        placeholder="Card Holder Name"
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-2 dark:text-gray-300">
+                          Expiry Date
+                        </label>
+                        <input
+                          type="text"
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              manualPaymentDetails: {
+                                ...prev.manualPaymentDetails,
+                                expiryDate: e.target.value,
+                              },
+                            }))
+                          }
+                          className="w-full border dark:border-gray-600 rounded py-2 px-3 dark:bg-gray-800 dark:text-white"
+                          placeholder="MM/YY"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-2 dark:text-gray-300">
+                          CVV
+                        </label>
+                        <input
+                          type="text"
+                          onChange={(e) =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              manualPaymentDetails: {
+                                ...prev.manualPaymentDetails,
+                                cvv: e.target.value,
+                              },
+                            }))
+                          }
+                          className="w-full border dark:border-gray-600 rounded py-2 px-3 dark:bg-gray-800 dark:text-white"
+                          placeholder="CVV"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+              {/* Crypto Payment Form */}
+              {formData.manualPaymentDetails?.paymentType === "crypto" && (
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2 dark:text-gray-300">
+                      Send payment to this wallet address:
+                    </label>
+                    <div className="flex items-center">
+                      <input
+                        type="text"
+                        value={cryptoWalletAddress}
+                        readOnly
+                        className="w-full border dark:border-gray-600 rounded py-2 px-3 dark:bg-gray-800 dark:text-white"
+                      />
+                      <button
+                        type="button"
+                        onClick={copyWalletAddress}
+                        className="bg-gray-200 dark:bg-gray-600 px-4 py-2 ml-2 rounded"
+                      >
+                        Copy
+                      </button>
+                    </div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                      After sending payment, please enter your transaction ID
+                      below
+                    </p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2 dark:text-gray-300">
+                      Your Transaction ID
+                    </label>
+                    <input
+                      type="text"
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          manualPaymentDetails: {
+                            ...prev.manualPaymentDetails,
+                            cryptoTransactionId: e.target.value,
+                          },
+                        }))
+                      }
+                      className="w-full border dark:border-gray-600 rounded py-2 px-3 dark:bg-gray-800 dark:text-white"
+                      placeholder="Enter transaction ID"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          <div className="text-center my-4">
+            <button
+              type="button"
+              onClick={() => navigate('/login')}
+              className="text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              Already have an account? Login instead
+            </button>
+          </div>
+
+          <div className="w-full text-end mt-8">
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="bg-black text-white dark:bg-yellow-400 dark:text-gray-800 px-16 py-3 text-sm hover:bg-gray-800 dark:hover:bg-yellow-500 disabled:opacity-70"
+            >
+              {isLoading ? "PROCESSING..." : "PLACE ORDER"}
+            </button>
+          </div>
+        </div>
+      </div>
+    </form>
+  );
+};
+
+export default GuestCheckout; 

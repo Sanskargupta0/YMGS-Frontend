@@ -16,8 +16,8 @@ const Cart = () => {
     if(token){
       navigate('/place-order');
     }else{
-      toast.error('Please login to proceed to payment');
-      navigate('/login');
+      toast.info('Continuing as guest checkout');
+      navigate('/guest-checkout');
     }
   }
 

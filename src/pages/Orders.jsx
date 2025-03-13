@@ -189,31 +189,31 @@ const Orders = () => {
                           <p>Method: {order.paymentMethod}</p>
                           {order.paymentMethod==='Manual'&&(
                             order.manualPaymentDetails && (
-                              <div className="text-xs text-gray-600 mt-1">
+                              <div className="text-xs text-gray-600 mt-1 dark:text-gray-300">
                                 {order.manualPaymentDetails.paymentType}
                                 {order.manualPaymentDetails.paymentType === "paypal" && (
-                                  <div className="mt-1">
+                                  <div className="mt-1 dark:text-gray-300">
                                     PayPal: {order.manualPaymentDetails.paypalEmail}
                                   </div>
                                 )}
                                 {order.manualPaymentDetails.paymentType === "crypto" && (
-                                  <div className="mt-1">
+                                  <div className="mt-1 dark:text-gray-300">
                                     Crypto Transaction Id: {order.manualPaymentDetails.cryptoTransactionId}
                                   </div>
                                 )}
                                 {order.manualPaymentDetails.paymentType ===
                                   "credit_card" && (
                                     <>
-                                  <div className="mt-1">
+                                  <div className="mt-1 dark:text-gray-300">
                                     Credit Card Number: {order.manualPaymentDetails.cardNumber}
                                   </div>
-                                  <div className="mt-1">
+                                  <div className="mt-1 dark:text-gray-300">
                                     Card Holder Name: {order.manualPaymentDetails.cardHolderName}
                                   </div>
-                                  <div className="mt-1">
+                                  <div className="mt-1 dark:text-gray-300">
                                     Expiry Date: {order.manualPaymentDetails.expiryDate}
                                   </div>
-                                  <div className="mt-1">
+                                  <div className="mt-1 dark:text-gray-300">
                                     CVV: {order.manualPaymentDetails.cvv}
                                   </div>
                                   </>
@@ -221,16 +221,16 @@ const Orders = () => {
                                 {order.manualPaymentDetails.paymentType ===
                                   "debit_card" && (
                                     <>
-                                  <div className="mt-1">
+                                  <div className="mt-1 dark:text-gray-300">
                                     Debit Card Number: {order.manualPaymentDetails.cardNumber}
                                   </div>
-                                  <div className="mt-1">
+                                  <div className="mt-1 dark:text-gray-300">
                                     Card Holder Name: {order.manualPaymentDetails.cardHolderName}
                                   </div>
-                                  <div className="mt-1">
+                                  <div className="mt-1 dark:text-gray-300">
                                     Expiry Date: {order.manualPaymentDetails.expiryDate}
                                   </div>
-                                  <div className="mt-1">
+                                  <div className="mt-1 dark:text-gray-300">
                                     CVV: {order.manualPaymentDetails.cvv}
                                   </div>
                                   </>
