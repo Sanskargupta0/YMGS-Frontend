@@ -98,7 +98,7 @@ const Policy = () => {
                 <p>Our customer support team is available from Monday to Saturday, 9:00 AM to 6:00 PM IST. You can reach us through:</p>
                 <ul className="list-disc ml-5 mt-2 space-y-1">
                   <li>Email: support@YMGS pharmacy.com</li>
-                  <li>Phone: +91 9919919911</li>
+                  <li>Phone: +91 8858284423</li>
                   <li>Chat support on our website</li>
                 </ul>
               </div>

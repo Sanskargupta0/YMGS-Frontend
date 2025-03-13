@@ -103,12 +103,12 @@ const Contact = () => {
 
             <div className='flex items-center gap-3 text-gray-600 dark:text-gray-300'>
               <Phone className='text-primary dark:text-yellow-400' size={20} />
-              <p>+1 (555) 123-4567</p>
+              <p>+91 8858284423</p>
             </div>
 
             <div className='flex items-center gap-3 text-gray-600 dark:text-gray-300'>
               <Mail className='text-primary dark:text-yellow-400' size={20} />
-              <p>support@YMGS pharmacy.com</p>
+              <p>ymgspharmacy@gmail.com</p>
             </div>
 
             <div className='flex items-center gap-3 text-gray-600 dark:text-gray-300'>

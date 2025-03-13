@@ -10,6 +10,7 @@ import PlaceOrder from './pages/PlaceOrder'
 import GuestCheckout from './pages/GuestCheckout'
 import Orders from './pages/Orders'
 import NavBar from './components/Navbar'
+import WhatsAppButton from './components/WhatsAppButton'
 import Footer from './components/Footer'
 import SearchBar from './components/SearchBar'
 import { ToastContainer } from 'react-toastify';
@@ -37,6 +38,9 @@ const App = () => {
         <Route path = '/verify' element = {<Verify/>}/>
         <Route path = '/policy' element = {<Policy/>}/>
       </Routes>
+      <div className='fixed bottom-4 right-4'>
+      <WhatsAppButton />
+      </div>
       <Footer />
     </div>
   )
