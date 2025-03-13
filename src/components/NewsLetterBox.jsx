@@ -18,20 +18,31 @@ const NewsLetterBox = () => {
     }
 
     return (
-        <section className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
-            <div className="container mx-auto py-12">
-                <div className="text-center">
-                    <h2 className="text-3xl font-bold mb-4">Subscribe to our Newsletter</h2>
-                    <p className="mb-8">Get the latest updates and offers.</p>
-                    <form onSubmit={onSubmitHandler} className="flex flex-col sm:flex-row justify-center items-center gap-4">
+        <section className="py-16 container">
+            <div className="bg-accent dark:bg-gray-700 rounded-2xl p-8 md:p-12">
+                <div className="max-w-2xl mx-auto text-center">
+                    <h2 className="font-display text-3xl md:text-4xl font-semibold text-primary dark:text-yellow-400">
+                        Stay Updated with YMGS
+                    </h2>
+                    <p className="mt-4 text-gray-600 dark:text-gray-300">
+                        Subscribe to our newsletter and receive updates about new products
+                        and special offers.
+                    </p>
+                    <form onSubmit={onSubmitHandler} className="mt-8 flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
                         <input
                             type="email"
                             placeholder="Enter your email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-primary dark:focus:ring-yellow-500"
+                            className="flex-1 px-4 py-3 rounded-full border border-gray-200 dark:border-gray-600 
+                                     bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-200
+                                     focus:outline-none focus:ring-2 focus:ring-primary/20 dark:focus:ring-yellow-400/20
+                                     placeholder-gray-400 dark:placeholder-gray-500"
                         />
-                        <button className="px-6 py-2 bg-primary text-white dark:bg-yellow-500 dark:text-gray-900 rounded-md hover:bg-primary/90 dark:hover:bg-yellow-600 transition-colors">
+                        <button className="bg-primary dark:bg-yellow-400 text-white dark:text-gray-800 
+                                         px-8 py-3 rounded-full font-medium 
+                                         hover:bg-primary/90 dark:hover:bg-yellow-500 
+                                         transition-colors">
                             Subscribe
                         </button>
                     </form>

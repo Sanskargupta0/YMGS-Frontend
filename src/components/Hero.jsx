@@ -26,7 +26,7 @@ const Hero = () => {
           <div className="flex-1 relative animate-fade-up" style={{ animationDelay: '0.2s' }}>
             <img
               src={assets.main}
-              alt="Fresh vegetables and fruits"
+              alt="Online Medicine & Healthcare Partner"
               className="rounded-2xl shadow-xl"
               loading="eager" // Priority loading for hero image
               width="800"

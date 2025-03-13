@@ -58,8 +58,8 @@ const Login = () => {
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
             {currentState === 'Login' 
-              ? "Sign in to access fresh produce" 
-              : "Join us for farm-fresh vegetables & fruits"}
+              ? "Sign in to access Online Medicine" 
+              : "Join us for Online Medicine & Healthcare Partner"}
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={onSubmitHandler}>

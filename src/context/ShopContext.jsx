@@ -14,9 +14,131 @@ const ShopContextProvider = (props) => {
     const [search, setSearch] = useState('');
     const [showSearch, setShowSearch]= useState(false);
     const [cartItems, setCartItem] = useState({});
+    const [featuredProducts, setFeaturedProducts] = useState([]);
     const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [productsPagination, setProductsPagination] = useState({
+        total: 0,
+        pages: 0,
+        currentPage: 1,
+        limit: 20
+    });
+    const [filters, setFilters] = useState({
+        category: [],
+        subCategory: [],
+        search: '',
+        sortBy: 'date',
+        sortOrder: 'desc'
+    });
     const [token, setToken] = useState('');
     const navigate = useNavigate();
+
+    // Function to update filters and fetch products
+    const updateFilters = (newFilters) => {
+        // Debug log to help troubleshoot
+        console.log("Updating filters with:", newFilters);
+        
+        // Create new filters by merging existing filters with new ones
+        const updatedFilters = {
+            ...filters,
+            ...newFilters
+        };
+        
+        // Update the filters state
+        setFilters(updatedFilters);
+        
+        // Reset to page 1 when filters change
+        setProductsPagination(prev => ({
+            ...prev,
+            currentPage: 1
+        }));
+        
+        // Force a data fetch right away instead of relying on the useEffect
+        fetchProductsWithCurrentFilters(updatedFilters);
+    };
+    
+    // A helper function to immediately fetch with the given filters
+    const fetchProductsWithCurrentFilters = async (currentFilters) => {
+        try {
+            setLoading(true);
+            console.log("Fetching products with filters:", currentFilters);
+            
+            // Use the new user-specific endpoint
+            const response = await axios.post(backendUrl + '/api/product/user/list', {
+                page: 1, // Always start at page 1 for a new filter set
+                limit: productsPagination.limit,
+                ...currentFilters,
+                search: currentFilters.search || search // Use either direct search or from filters
+            });
+            
+            if (response.data.success) {
+                console.log("Fetched products:", response.data.products);
+                setProducts(response.data.products);
+                setProductsPagination({
+                    total: response.data.pagination.total,
+                    pages: response.data.pagination.pages,
+                    currentPage: response.data.pagination.currentPage,
+                    limit: response.data.pagination.limit
+                });
+            } else {
+                toast.error(response.data.message);
+            }
+        } catch (error) {
+            console.error("Error fetching products:", error);
+            toast.error(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Function to set page for pagination
+    const setPage = (page) => {
+        if (page < 1 || page > productsPagination.pages) return;
+        
+        const newPage = parseInt(page);
+        console.log("Setting page to:", newPage);
+        
+        setProductsPagination(prev => ({
+            ...prev,
+            currentPage: newPage
+        }));
+        
+        // Fetch the data for the new page
+        fetchProductsForPage(newPage);
+    };
+    
+    // Helper function to fetch products for a specific page
+    const fetchProductsForPage = async (page) => {
+        try {
+            setLoading(true);
+            
+            // Use the new user-specific endpoint
+            const response = await axios.post(backendUrl + '/api/product/user/list', {
+                page: page,
+                limit: productsPagination.limit,
+                ...filters,
+                search: filters.search || search // Use either direct search or from filters
+            });
+            
+            if (response.data.success) {
+                console.log("Fetched products for page:", page, response.data.products);
+                setProducts(response.data.products);
+                setProductsPagination({
+                    total: response.data.pagination.total,
+                    pages: response.data.pagination.pages,
+                    currentPage: response.data.pagination.currentPage,
+                    limit: response.data.pagination.limit
+                });
+            } else {
+                toast.error(response.data.message);
+            }
+        } catch (error) {
+            console.error("Error fetching products:", error);
+            toast.error(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const addToCart = async (itemId, itemData) => {
         // Convert old format to new format if needed
@@ -192,30 +314,112 @@ const ShopContextProvider = (props) => {
         }
     }
 
-    const getProductsData = async () => {
+    // Get products with filters and pagination
+    const getProductsData = async (initialLoad = false) => {
         try {
-            const response = await axios.get(backendUrl + '/api/product/list')
-            if(response.data.success){
-                setProducts(response.data.products)
+            setLoading(true);
+            
+            // If it's the initial load, just get featured products
+            if (initialLoad) {
+                // Use the new user-specific endpoint
+                const featuredResponse = await axios.post(backendUrl + '/api/product/user/list', {
+                    limit: 10,
+                    bestseller: true,
+                    sortBy: 'date',
+                    sortOrder: 'desc'
+                });
+                
+                if (featuredResponse.data.success) {
+                    setFeaturedProducts(featuredResponse.data.products);
+                }
+                setLoading(false);
+                return;
             }
-            else{
-                toast.error(response.data.message)
+            
+            // For regular page loads, use filters and pagination
+            // Use the new user-specific endpoint
+            const response = await axios.post(backendUrl + '/api/product/user/list', {
+                page: productsPagination.currentPage,
+                limit: productsPagination.limit,
+                ...filters,
+                search: filters.search || search // Use either direct search or from filters
+            });
+            
+            if (response.data.success) {
+                setProducts(response.data.products);
+                setProductsPagination({
+                    total: response.data.pagination.total,
+                    pages: response.data.pagination.pages,
+                    currentPage: response.data.pagination.currentPage,
+                    limit: response.data.pagination.limit
+                });
+            } else {
+                toast.error(response.data.message);
             }
         } catch (error) {
-            console.log(error)
-            toast.error(error.message)
+            console.log(error);
+            toast.error(error.message);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Get a specific product by ID
+    const getProductById = async (productId) => {
+        try {
+            setLoading(true);
+            const response = await axios.get(`${backendUrl}/api/product/${productId}`);
+            if (response.data.success) {
+                return response.data.product;
+            } else {
+                toast.error(response.data.message);
+                return null;
+            }
+        } catch (error) {
+            console.log(error);
+            toast.error(error.message);
+            return null;
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    // Get related products
+    const getRelatedProducts = async (category, subCategory, excludeId, limit = 5) => {
+        try {
+            setLoading(true);
+            // Use the new user-specific endpoint
+            const response = await axios.post(backendUrl + '/api/product/user/list', {
+                category,
+                subCategory,
+                excludeId,
+                limit,
+                sortBy: 'date',
+                sortOrder: 'desc'
+            });
+            
+            if (response.data.success) {
+                return response.data.products;
+            } else {
+                return [];
+            }
+        } catch (error) {
+            console.log(error);
+            return [];
+        } finally {
+            setLoading(false);
         }
     }
 
     const getUserCart = async (token) => {
         try {
-            const response = await axios.post(backendUrl + '/api/cart/get', {}, {headers:{token}})
+            const response = await axios.post(backendUrl + '/api/cart/get', {}, {headers:{token}});
             if (response.data.success) {
                 setCartItem(response.data.cartData);
             }
         } catch (error) {
-            console.log(error)
-            toast.error(error.message)
+            console.log(error);
+            toast.error(error.message);
         }
     }
 
@@ -247,24 +451,45 @@ const ShopContextProvider = (props) => {
         return items;
     }
 
-    useEffect(()=>{
-        getProductsData()
-    }, [])
+    useEffect(() => {
+        // On initial load, fetch featured products
+        getProductsData(true);
+    }, []);
 
-    useEffect(()=>{
-        if (!token && localStorage.getItem('token')) {
-            setToken(localStorage.getItem('token'))
-            getUserCart(localStorage.getItem('token'))
+    // Listen for changes in filters and pagination to fetch products
+    useEffect(() => {
+        if (showSearch || (filters.category.length > 0) || (filters.subCategory.length > 0) || 
+            filters.search || productsPagination.currentPage > 1) {
+            getProductsData();
         }
-    }, [])
+    }, [filters, productsPagination.currentPage, showSearch]);
+
+    // Apply search when search box is used
+    useEffect(() => {
+        if (showSearch) {
+            updateFilters({ search });
+        }
+    }, [search, showSearch]);
+
+    useEffect(() => {
+        if (!token && localStorage.getItem('token')) {
+            setToken(localStorage.getItem('token'));
+            getUserCart(localStorage.getItem('token'));
+        }
+    }, []);
 
     const value = {
-        products, currency, delivery_fee,
+        products, featuredProducts, loading, currency, delivery_fee,
         search, setSearch, showSearch, setShowSearch,
         cartItems, addToCart, setCartItem,
         getCartCount, updateQuantity,
         getCartAmount, navigate, backendUrl,
-        setToken, token, getCartItems, getItemTotal
+        setToken, token, getCartItems, getItemTotal,
+        filters, updateFilters, 
+        pagination: productsPagination,
+        setPage,
+        getProductById,
+        getRelatedProducts
     }
 
     return(
