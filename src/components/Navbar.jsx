@@ -18,8 +18,16 @@ const NavBar = () => {
     return (
     <div className='flex items-center justify-between py-5 font-medium bg-white dark:bg-gray-800 transition-colors'>
        <Link to="/" className="font-display text-2xl text-primary dark:text-yellow-400">
-            YMGS pharmacy
-          </Link>
+  <div className="flex items-center gap-2">
+    <span className="text-lg sm:text-2xl">YMGS Pharmacy</span>
+    <img 
+      src={assets.logo} 
+      alt="YMGS Pharmacy Logo" 
+      className="h-auto w-auto max-w-[30px] max-h-[30px] sm:max-w-[40px] sm:max-h-[40px]" 
+    />
+  </div>
+</Link>
+
       <ul className='hidden sm:flex gap-5 text-sm text-gray-700 dark:text-gray-200'>
         <NavLink to='/' className='flex flex-col items-center gap-1 hover:text-primary dark:hover:text-yellow-400'>
             <p>HOME</p>

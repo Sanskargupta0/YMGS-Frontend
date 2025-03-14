@@ -15,6 +15,7 @@ import cross_icon from './cross_icon.png'
 import main from "./main.jpg"
 import about from './about.jpg'
 import contact from "./Contact-Us.jpg"
+import logo from "./logo.png"
 
 export const assets = {
     cart_icon,
@@ -33,6 +34,7 @@ export const assets = {
     cross_icon,
     main,
     about,
-    contact
+    contact,
+    logo
 }
 
