@@ -7,7 +7,7 @@ import ThemeSwitcher from './ThemeSwitcher';
 
 const NavBar = () => {
     const [visible, setVisible] = useState(false);
-    const {setShowSearch, getCartCount, cartItems, navigate, token, setToken, setCartItems} = useContext(ShopContext);
+    const {setShowSearch, getCartAmount, navigate, token, setToken, setCartItems} = useContext(ShopContext);
     const logout = () => {
         navigate('/login')
         localStorage.removeItem('token')
@@ -67,7 +67,7 @@ const NavBar = () => {
         <Link to='/cart' className='relative'>
             <img src={assets.cart_icon} className='w-5 min-w-5 dark:invert' alt="" />
             <p className='absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black dark:bg-white text-white dark:text-black aspect-square rounded-full text-[8px]'>
-                {getCartCount()}
+                {getCartAmount()}
             </p>
         </Link>
         <img onClick={() => setVisible(true)} src={assets.menu_icon} className='w-5 cursor-pointer sm:hidden dark:invert' alt=""></img>

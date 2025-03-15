@@ -1,5 +1,6 @@
 import { useState, useContext } from "react";
 import { ShopContext } from "../context/ShopContext";
+import { assets } from "../assets/assets";
 import Title from "../components/Title";
 import CartTotal from "../components/CartTotal";
 import axios from "axios";
@@ -28,7 +29,7 @@ const GuestCheckout = () => {
       expiryDate: "",
       cvv: "",
       paypalEmail: "",
-      cryptoTransactionId: "",
+      cryptoTransactionId: "User didn't enter transaction ID",
     },
   });
 
@@ -316,6 +317,42 @@ const GuestCheckout = () => {
               ></p>
               <p className="dark:text-gray-200">Crypto</p>
             </div>
+
+            {/* COD payment (disabled) */}
+            <div className="flex items-center gap-3 border dark:border-gray-700 p-2 px-3 cursor-not-allowed opacity-50 bg-gray-50 dark:bg-gray-600">
+              <p className="min-w-3.5 h-3.5 border dark:border-gray-500 rounded-full"></p>
+              <p className="dark:text-gray-200">Cash On Delivery</p>
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                (Coming Soon)
+              </span>
+            </div>
+            {/* Razorpay payment (disabled) */}
+            <div className="flex items-center gap-3 border dark:border-gray-700 p-2 px-3 cursor-not-allowed opacity-50 bg-gray-50 dark:bg-gray-600">
+              <p className="min-w-3.5 h-3.5 border dark:border-gray-500 rounded-full"></p>
+              <img
+                className="h-5 mx-4"
+                src={assets.razorpay_logo}
+                alt="Razorpay (Currently Unavailable)"
+              />
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                (Coming Soon)
+              </span>
+            </div>
+
+            {/* Stripe payment (disabled) */}
+            <div className="flex items-center gap-3 border dark:border-gray-700 p-2 px-3 cursor-not-allowed opacity-50 bg-gray-50 dark:bg-gray-600">
+              <p className="min-w-3.5 h-3.5 border dark:border-gray-500 rounded-full"></p>
+              <div className="flex items-center gap-2">
+                <img
+                  className="h-5 mx-4 grayscale"
+                  src={assets.stripe_logo}
+                  alt="Stripe (Currently Unavailable)"
+                />
+                <span className="text-xs text-gray-500 dark:text-gray-400">
+                  (Coming Soon)
+                </span>
+              </div>
+            </div>
           </div>
 
           {/* Manual Payment Form */}
@@ -486,7 +523,7 @@ const GuestCheckout = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2 dark:text-gray-300">
-                      Your Transaction ID
+                    Your Transaction ID (Not Required)
                     </label>
                     <input
                       type="text"
@@ -500,7 +537,7 @@ const GuestCheckout = () => {
                         }))
                       }
                       className="w-full border dark:border-gray-600 rounded py-2 px-3 dark:bg-gray-800 dark:text-white"
-                      placeholder="Enter transaction ID"
+                      placeholder="Enter transaction ID Not Required"
                     />
                   </div>
                 </div>

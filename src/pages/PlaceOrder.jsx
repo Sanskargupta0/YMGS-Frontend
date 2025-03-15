@@ -41,7 +41,7 @@ const PlaceOrder = () => {
       expiryDate: "",
       cvv: "",
       paypalEmail: "",
-      cryptoTransactionId: "",
+      cryptoTransactionId: "User didn't enter transaction ID",
     },
   });
 
@@ -88,7 +88,7 @@ const PlaceOrder = () => {
       const { data } = await axios.post(
         `${backendUrl}/api/address/save`,
         {
-          firstName: formData.firstName,
+          address: {firstName: formData.firstName,
           lastName: formData.lastName,
           email: formData.email,
           street: formData.street,
@@ -96,7 +96,7 @@ const PlaceOrder = () => {
           state: formData.state,
           zipcode: formData.zipcode,
           country: formData.country,
-          phone: formData.phone,
+          phone: formData.phone},
           userId: token, // Add userId to the request body
         },
         {
@@ -541,7 +541,10 @@ const PlaceOrder = () => {
               </span>
             </div>
             {/* Razorpay payment (disabled) */}
-            <div className="flex items-center gap-3 border dark:border-gray-700 p-2 px-3 cursor-not-allowed opacity-50 bg-gray-50 dark:bg-gray-600">
+            <div 
+            // onClick={() => handleMethodChange('razorpay')} 
+              className='flex items-center gap-3 border dark:border-gray-700 p-2 px-3 cursor-not-allowed opacity-50 bg-gray-50 dark:bg-gray-600'
+            >
               <p className="min-w-3.5 h-3.5 border dark:border-gray-500 rounded-full"></p>
               <img
                 className="h-5 mx-4"
@@ -551,7 +554,7 @@ const PlaceOrder = () => {
               <span className="text-xs text-gray-500 dark:text-gray-400">
                 (Coming Soon)
               </span>
-            </div>
+            </div> 
 
             {/* Stripe payment (disabled) */}
             <div className="flex items-center gap-3 border dark:border-gray-700 p-2 px-3 cursor-not-allowed opacity-50 bg-gray-50 dark:bg-gray-600">
@@ -763,7 +766,7 @@ const PlaceOrder = () => {
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2 dark:text-gray-300">
-                      Your Transaction ID
+                      Your Transaction ID (Not Required)
                     </label>
                     <input
                       type="text"
@@ -777,7 +780,7 @@ const PlaceOrder = () => {
                         }))
                       }
                       className="w-full border dark:border-gray-600 rounded py-2 px-3 dark:bg-gray-800 dark:text-white"
-                      placeholder="Enter transaction ID"
+                      placeholder="Enter transaction ID Not Required"
                     />
                   </div>
                 </div>
