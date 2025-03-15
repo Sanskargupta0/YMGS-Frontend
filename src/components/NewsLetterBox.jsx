@@ -21,7 +21,7 @@ const NewsLetterBox = () => {
         <section className="py-16 container">
             <div className="bg-accent dark:bg-gray-700 rounded-2xl p-8 md:p-12">
                 <div className="max-w-2xl mx-auto text-center">
-                    <h2 className="font-display text-3xl md:text-4xl font-semibold text-primary dark:text-yellow-400">
+                    <h2 className="font-display text-3xl md:text-4xl font-semibold text-primary dark:text-[#02ADEE]">
                         Stay Updated with YMGS pharmacy
                     </h2>
                     <p className="mt-4 text-gray-600 dark:text-gray-300">
@@ -39,7 +39,7 @@ const NewsLetterBox = () => {
                                      focus:outline-none focus:ring-2 focus:ring-primary/20 dark:focus:ring-yellow-400/20
                                      placeholder-gray-400 dark:placeholder-gray-500"
                         />
-                        <button className="bg-primary dark:bg-yellow-400 text-white dark:text-gray-800 
+                        <button className="bg-primary dark:bg-[#02ADEE] text-white dark:text-gray-800 
                                          px-8 py-3 rounded-full font-medium 
                                          hover:bg-primary/90 dark:hover:bg-yellow-500 
                                          transition-colors">

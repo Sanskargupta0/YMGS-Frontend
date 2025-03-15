@@ -132,7 +132,7 @@ const Cart = () => {
               <div className='w-full text-end'>
                 <button 
                   onClick={proceedToPayment} 
-                  className='bg-black text-white text-sm my-8 px-8 py-3 dark:bg-yellow-400 dark:text-gray-800 dark:hover:bg-yellow-500'
+                  className='bg-black text-white text-sm my-8 px-8 py-3 dark:bg-[#02ADEE] dark:text-gray-800 dark:hover:bg-yellow-500'
                 >
                   PROCEED TO PAYMENT
                 </button>

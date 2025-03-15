@@ -161,7 +161,7 @@ const Collection = () => {
           onClick={() => setPage(i)}
           className={`w-8 h-8 rounded ${
             pagination.currentPage === i
-              ? 'bg-black text-white dark:bg-yellow-400 dark:text-gray-800'
+              ? 'bg-black text-white dark:bg-[#02ADEE] dark:text-gray-800'
               : 'bg-white text-gray-700 dark:bg-gray-700 dark:text-gray-200'
           }`}
         >

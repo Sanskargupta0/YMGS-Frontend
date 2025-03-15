@@ -97,22 +97,22 @@ const Contact = () => {
 
           <div className='flex flex-col gap-6'>
             <div className='flex items-center gap-3 text-gray-600 dark:text-gray-300'>
-              <MapPin className='text-primary dark:text-yellow-400' size={20} />
+              <MapPin className='text-primary dark:text-[#02ADEE]' size={20} />
               <p>123 Fresh Market Lane<br />Garden District, Green City 12345</p>
             </div>
 
             <div className='flex items-center gap-3 text-gray-600 dark:text-gray-300'>
-              <Phone className='text-primary dark:text-yellow-400' size={20} />
+              <Phone className='text-primary dark:text-[#02ADEE]' size={20} />
               <p>+91 8858284423</p>
             </div>
 
             <div className='flex items-center gap-3 text-gray-600 dark:text-gray-300'>
-              <Mail className='text-primary dark:text-yellow-400' size={20} />
-              <p>ymgspharmacy@gmail.com</p>
+              <Mail className='text-primary dark:text-[#02ADEE]' size={20} />
+              <p>YMGSpharmacy@gmail.com</p>
             </div>
 
             <div className='flex items-center gap-3 text-gray-600 dark:text-gray-300'>
-              <Clock className='text-primary dark:text-yellow-400' size={20} />
+              <Clock className='text-primary dark:text-[#02ADEE]' size={20} />
               <p>Mon - Sat: 8:00 AM - 8:00 PM<br />Sunday: 9:00 AM - 6:00 PM</p>
             </div>
           </div>
@@ -178,7 +178,7 @@ const Contact = () => {
           ></textarea>
         </div>
         <button
-          className="w-full bg-yellow-300 text-gray-800 dark:bg-yellow-400 dark:hover:bg-yellow-500 py-2 px-4 rounded-lg hover:bg-yellow-400 transition duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
+          className="w-full bg-yellow-300 text-gray-800 dark:bg-[#02ADEE] dark:hover:bg-yellow-500 py-2 px-4 rounded-lg hover:bg-[#02ADEE] transition duration-300 disabled:opacity-70 disabled:cursor-not-allowed"
           type="submit"
           disabled={isSubmitting}
         >

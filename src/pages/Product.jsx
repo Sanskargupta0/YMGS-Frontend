@@ -141,7 +141,7 @@ const Product = () => {
           </p>
           <button 
             onClick={() => navigate('/collection')}
-            className="px-6 py-2 bg-black text-white dark:bg-yellow-400 dark:text-gray-800"
+            className="px-6 py-2 bg-[#02ADEE] text-white dark:bg-[#02ADEE] dark:text-gray-800"
           >
             Browse Products
           </button>
@@ -197,7 +197,7 @@ const Product = () => {
                     onClick={() => handleQuantityPriceSelect(qp)}
                     className={`p-3 border ${
                       selectedQuantityPrice && selectedQuantityPrice.quantity === qp.quantity 
-                        ? 'border-black dark:border-yellow-400 bg-black dark:bg-yellow-400 text-white dark:text-gray-800' 
+                        ? 'border-black dark:border-yellow-400 bg-[#02ADEE] dark:bg-[#02ADEE] text-white dark:text-gray-800' 
                         : 'border-gray-300 dark:border-gray-600 hover:border-black dark:hover:border-yellow-400'
                     }`}
                   >
@@ -262,7 +262,7 @@ const Product = () => {
                 setSelectedQuantityPrice(null);
               }
             }} 
-            className='bg-black text-white px-8 py-3 text-sm active:bg-gray-700 dark:bg-yellow-400 dark:text-gray-800 dark:hover:bg-yellow-500'
+            className='bg-[#02ADEE] text-white px-8 py-3 text-sm active:bg-gray-700 dark:bg-[#02ADEE] dark:text-gray-800 dark:hover:bg-yellow-500'
           >
             ADD TO CART
           </button>
@@ -290,7 +290,7 @@ const Product = () => {
               }
               navigate("/cart")
             }} 
-            className='bg-black text-white mx-4 px-8 py-3 text-sm active:bg-gray-700 dark:bg-yellow-400 dark:text-gray-800 dark:hover:bg-yellow-500'
+            className='bg-[#02ADEE] text-white mx-4 px-8 py-3 text-sm active:bg-gray-700 dark:bg-[#02ADEE] dark:text-gray-800 dark:hover:bg-yellow-500'
           >
             BUY NOW
           </button>

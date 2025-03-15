@@ -10,6 +10,7 @@ const GuestCheckout = () => {
   const [method, setMethod] = useState("manual");
   const [isLoading, setIsLoading] = useState(false);
   const [cryptoWalletAddress] = useState("0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7");
+  const [sameAsDelivery, setSameAsDelivery] = useState(true);
   const { navigate, backendUrl, setCartItem, getCartAmount, delivery_fee, getCartItems } = useContext(ShopContext);
   
   const [formData, setFormData] = useState({
@@ -22,6 +23,15 @@ const GuestCheckout = () => {
     zipcode: "",
     country: "",
     phone: "",
+    billingFirstName: "",
+    billingLastName: "",
+    billingEmail: "",
+    billingStreet: "",
+    billingCity: "",
+    billingState: "",
+    billingZipcode: "",
+    billingCountry: "",
+    billingPhone: "",
     manualPaymentDetails: {
       paymentType: "",
       cardNumber: "",
@@ -60,6 +70,27 @@ const GuestCheckout = () => {
     setFormData((data) => ({ ...data, [name]: value }));
   };
 
+  const handleSameAsDeliveryChange = (e) => {
+    const isChecked = e.target.checked;
+    setSameAsDelivery(isChecked);
+    
+    if (isChecked) {
+      // If checked, copy delivery address to billing address
+      setFormData(prev => ({
+        ...prev,
+        billingFirstName: prev.firstName,
+        billingLastName: prev.lastName,
+        billingEmail: prev.email,
+        billingStreet: prev.street,
+        billingCity: prev.city,
+        billingState: prev.state,
+        billingZipcode: prev.zipcode,
+        billingCountry: prev.country,
+        billingPhone: prev.phone
+      }));
+    }
+  };
+
   const onSubmitHandler = async (event) => {
     event.preventDefault();
     
@@ -77,6 +108,24 @@ const GuestCheckout = () => {
     ) {
       toast.error("Please fill all required fields");
       return;
+    }
+
+    // Validate billing address if not using same as delivery
+    if (!sameAsDelivery) {
+      if (
+        !formData.billingFirstName ||
+        !formData.billingLastName ||
+        !formData.billingEmail ||
+        !formData.billingStreet ||
+        !formData.billingCity ||
+        !formData.billingState ||
+        !formData.billingZipcode ||
+        !formData.billingCountry ||
+        !formData.billingPhone
+      ) {
+        toast.error("Please fill all required billing address fields");
+        return;
+      }
     }
 
     // Payment method validation
@@ -114,19 +163,36 @@ const GuestCheckout = () => {
     try {
       setIsLoading(true);
       const items = getCartItems(); // Get formatted cart items
-      let address ={
+      let address = {
         firstName: formData.firstName,
-          lastName: formData.lastName,
-          email: formData.email,
-          street: formData.street,
-          city: formData.city,
-          state: formData.state,
-          zipcode: formData.zipcode,
-          country: formData.country,
-          phone: formData.phone
-      }
+        lastName: formData.lastName,
+        email: formData.email,
+        street: formData.street,
+        city: formData.city,
+        state: formData.state,
+        zipcode: formData.zipcode,
+        country: formData.country,
+        phone: formData.phone
+      };
+
+      // Create billing address object
+      let billingAddress = sameAsDelivery 
+        ? address 
+        : {
+            firstName: formData.billingFirstName,
+            lastName: formData.billingLastName,
+            email: formData.billingEmail,
+            street: formData.billingStreet,
+            city: formData.billingCity,
+            state: formData.billingState,
+            zipcode: formData.billingZipcode,
+            country: formData.billingCountry,
+            phone: formData.billingPhone
+          };
+
       const orderData = {
         address: address,
+        billingAddress: billingAddress,
         items: items,
         amount: getCartAmount() + delivery_fee,
         isGuest: true,
@@ -141,7 +207,7 @@ const GuestCheckout = () => {
       
       if (response.data.success) {
         setCartItem({});
-        toast.success("Order placed successfully!");
+        toast.success("Order placed successfully!   One of our representative will get in touch with you in 24 hours Via call or email");
         navigate("/"); // Redirect to home page after successful order
       } else {
         toast.error(response.data.message || "Failed to place order");
@@ -256,6 +322,121 @@ const GuestCheckout = () => {
           type="number"
           placeholder="Mobile Number"
         />
+
+        {/* Same As Delivery Checkbox */}
+        <div className="mt-6">
+          <div className="flex items-center mb-4">
+            <input
+              type="checkbox"
+              id="sameAsDelivery"
+              checked={sameAsDelivery}
+              onChange={handleSameAsDeliveryChange}
+              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+            />
+            <label
+              htmlFor="sameAsDelivery"
+              className="ml-2 text-sm font-medium text-gray-900 dark:text-gray-300"
+            >
+              Billing Address same as Delivery Address
+            </label>
+          </div>
+        </div>
+
+        {/* Billing Address Section */}
+        {!sameAsDelivery && (
+          <div className="flex flex-col gap-4 w-full sm:max-w-[480px]">
+            <div className="text-xl sm:text-2xl my-3">
+              <Title text1={"BILLING"} text2={"INFORMATION"} />
+            </div>
+            <div className="flex gap-3">
+              <input
+                required
+                onChange={onChangeHandler}
+                name="billingFirstName"
+                value={formData.billingFirstName}
+                className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded py-1.5 px-3.5 w-full"
+                type="text"
+                placeholder="First name"
+              />
+              <input
+                required
+                onChange={onChangeHandler}
+                name="billingLastName"
+                value={formData.billingLastName}
+                className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded py-1.5 px-3.5 w-full"
+                type="text"
+                placeholder="Last name"
+              />
+            </div>
+            <input
+              required
+              onChange={onChangeHandler}
+              name="billingEmail"
+              value={formData.billingEmail}
+              className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded py-1.5 px-3.5 w-full"
+              type="email"
+              placeholder="E-mail Address"
+            />
+            <input
+              required
+              onChange={onChangeHandler}
+              name="billingStreet"
+              value={formData.billingStreet}
+              className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded py-1.5 px-3.5 w-full"
+              type="text"
+              placeholder="Street"
+            />
+            <div className="flex gap-3">
+              <input
+                required
+                onChange={onChangeHandler}
+                name="billingCity"
+                value={formData.billingCity}
+                className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded py-1.5 px-3.5 w-full"
+                type="text"
+                placeholder="City"
+              />
+              <input
+                required
+                onChange={onChangeHandler}
+                name="billingState"
+                value={formData.billingState}
+                className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded py-1.5 px-3.5 w-full"
+                type="text"
+                placeholder="State"
+              />
+            </div>
+            <div className="flex gap-3">
+              <input
+                required
+                onChange={onChangeHandler}
+                name="billingZipcode"
+                value={formData.billingZipcode}
+                className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded py-1.5 px-3.5 w-full"
+                type="number"
+                placeholder="Area PIN-CODE"
+              />
+              <input
+                required
+                onChange={onChangeHandler}
+                name="billingCountry"
+                value={formData.billingCountry}
+                className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded py-1.5 px-3.5 w-full"
+                type="text"
+                placeholder="Country"
+              />
+            </div>
+            <input
+              required
+              onChange={onChangeHandler}
+              name="billingPhone"
+              value={formData.billingPhone}
+              className="border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded py-1.5 px-3.5 w-full"
+              type="number"
+              placeholder="Mobile Number"
+            />
+          </div>
+        )}
       </div>
 
       {/* Right side - Payment Information */}
@@ -495,7 +676,7 @@ const GuestCheckout = () => {
                 )}
 
               {/* Crypto Payment Form */}
-              {formData.manualPaymentDetails?.paymentType === "crypto" && (
+              {/* {formData.manualPaymentDetails?.paymentType === "crypto" && (
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium mb-2 dark:text-gray-300">
@@ -541,7 +722,8 @@ const GuestCheckout = () => {
                     />
                   </div>
                 </div>
-              )}
+              )} */}
+
             </div>
           )}
 
@@ -559,7 +741,7 @@ const GuestCheckout = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className="bg-black text-white dark:bg-yellow-400 dark:text-gray-800 px-16 py-3 text-sm hover:bg-gray-800 dark:hover:bg-yellow-500 disabled:opacity-70"
+              className="bg-black text-white dark:bg-[#02ADEE] dark:text-gray-800 px-16 py-3 text-sm hover:bg-gray-800 dark:hover:bg-yellow-500 disabled:opacity-70"
             >
               {isLoading ? "PROCESSING..." : "PLACE ORDER"}
             </button>

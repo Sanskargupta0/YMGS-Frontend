@@ -22,7 +22,7 @@ const Feature = () => {
             className="p-6 bg-secondary/30 dark:bg-gray-700 rounded-xl shadow-sm animate-fade-up"
             style={{ animationDelay: `${0.1 * (index + 1)}s` }}
           >
-            <h3 className="font-display text-xl font-semibold text-primary dark:text-yellow-400">
+            <h3 className="font-display text-xl font-semibold text-primary dark:text-[#02ADEE]">
               {feature.title}
             </h3>
             <p className="mt-2 text-gray-600 dark:text-gray-300">
