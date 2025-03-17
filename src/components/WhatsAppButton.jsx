@@ -1,7 +1,33 @@
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+
 const WhatsAppButton = () => {
+  const [contactInfo, setContactInfo] = useState({
+    footerEmail: 'ymgspharmacy@gmail.com',
+    footerPhone: '918858284423'
+  });
   const handleClick = () => {
-    window.open("https://wa.me/918858284423", "_blank");
+    // remove the + and empty space
+    let number = contactInfo.footerPhone.replace(/\+|\s/g, '');
+    window.open(`https://wa.me/${number}`, "_blank");
   };
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const backendUrl = import.meta.env.VITE_BACKEND_URL;
+        const response = await axios.get(`${backendUrl}/api/order/settings`);
+        
+        if (response.data.success) {
+          setContactInfo(response.data.settings);
+        }
+      } catch (error) {
+        console.error("Failed to fetch footer information:", error);
+      }
+    };
+
+    fetchSettings();
+  }, []);
 
   return (
     <button className="Btn" onClick={handleClick}>

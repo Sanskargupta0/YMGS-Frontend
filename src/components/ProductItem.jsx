@@ -37,8 +37,8 @@ const ProductItem = ({id, image, name, price, quantityPriceList}) => {
             <div className='overflow-hidden'>
                 <img className='hover:scale-110 transition ease-in-out' src={image[0]} alt="" />
             </div>
-            <p className='pt-3 pb-1 text-sm'>{name}</p>
-            <p className='text-sm font-medium dark:text-white'>{currency}{getDisplayPrice()}</p>
+            <p className='pt-3 pb-1 text-sm text-center'>{name}</p>
+            <p className='text-sm font-medium text-center dark:text-white'>{currency}{getDisplayPrice()}</p>
         </Link>
     )
 }

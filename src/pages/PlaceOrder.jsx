@@ -12,9 +12,7 @@ const PlaceOrder = () => {
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [cryptoWalletAddress] = useState(
-    "0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7"
-  );
+  const [cryptoWalletAddress, setCryptoWalletAddress] = useState("");
   const [sameAsDelivery, setSameAsDelivery] = useState(true);
   const {
     navigate,
@@ -258,6 +256,9 @@ const PlaceOrder = () => {
     );
     
     setSelectedWallet(wallet || null);
+    if (wallet) {
+      setCryptoWalletAddress(wallet.walletAddress);
+    }
     
     setFormData((prev) => ({
       ...prev,
@@ -1072,26 +1073,26 @@ const PlaceOrder = () => {
                     </div>
                   )}
                   
-                  {selectedWallet ? (
-                    <div>
-                      <label className="block text-sm font-medium mb-2 dark:text-gray-300">
-                        Send payment to this wallet address:
-                      </label>
-                      <div className="flex items-center">
-                        <input
-                          type="text"
+                  {selectedWallet && (
+                  <div>
+                    <label className="block text-sm font-medium mb-2 dark:text-gray-300">
+                      Send payment to this wallet address:
+                    </label>
+                    <div className="flex items-center">
+                      <input
+                        type="text"
                           value={selectedWallet.walletAddress}
-                          readOnly
-                          className="w-full border dark:border-gray-600 rounded py-2 px-3 dark:bg-gray-800 dark:text-white"
-                        />
-                        <button
-                          type="button"
+                        readOnly
+                        className="w-full border dark:border-gray-600 rounded py-2 px-3 dark:bg-gray-800 dark:text-white"
+                      />
+                      <button
+                        type="button"
                           onClick={() => copyWalletAddress(selectedWallet.walletAddress)}
-                          className="bg-gray-200 dark:bg-gray-600 px-4 py-2 ml-2 rounded"
-                        >
-                          Copy
-                        </button>
-                      </div>
+                        className="bg-gray-200 dark:bg-gray-600 px-4 py-2 ml-2 rounded"
+                      >
+                        Copy
+                      </button>
+                    </div>
                       
                       <div className="mt-4 flex justify-center">
                         <img 
@@ -1100,28 +1101,11 @@ const PlaceOrder = () => {
                           className="w-48 h-48 object-contain border dark:border-gray-600 p-2"
                         />
                       </div>
-                    </div>
-                  ) : (
-                    <div>
-                      <label className="block text-sm font-medium mb-2 dark:text-gray-300">
-                        Send payment to this wallet address:
-                      </label>
-                      <div className="flex items-center">
-                        <input
-                          type="text"
-                          value={cryptoWalletAddress}
-                          readOnly
-                          className="w-full border dark:border-gray-600 rounded py-2 px-3 dark:bg-gray-800 dark:text-white"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => copyWalletAddress()}
-                          className="bg-gray-200 dark:bg-gray-600 px-4 py-2 ml-2 rounded"
-                        >
-                          Copy
-                        </button>
-                      </div>
-                    </div>
+                      
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+                        After sending payment, you can optionally enter your transaction ID below
+                    </p>
+                  </div>
                   )}
                   
                   <div>

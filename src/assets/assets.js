@@ -9,7 +9,9 @@ import western_union from './western_union_icon.png'
 import support_img from './support_img.png'
 import menu_icon from './menu_icon.png'
 import cross_icon from './cross_icon.png'
-import main from "./main.jpg"
+import image1 from "./image1.jpg"
+import image2 from "./image2.png"
+import image3 from "./image3.png"
 import about from './about.jpg'
 import contact from "./Contact-Us.jpg"
 import logo from "./logo.png"
@@ -26,9 +28,11 @@ export const assets = {
     support_img,
     menu_icon,
     cross_icon,
-    main,
     about,
     contact,
-    logo
+    logo,
+    image1,
+    image2,
+    image3
 }
 
