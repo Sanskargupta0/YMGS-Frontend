@@ -20,8 +20,8 @@ const WhatsAppButton = () => {
           display: flex;
           align-items: center;
           justify-content: flex-start;
-          width: 45px;
-          height: 45px;
+          width: 60px;
+          height: 60px;
           border: none;
           border-radius: 50%;
           cursor: pointer;

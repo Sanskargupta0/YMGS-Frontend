@@ -6,7 +6,7 @@ import ThemeSwitcher from './ThemeSwitcher';
 
 const NavBar = () => {
     const [visible, setVisible] = useState(false);
-    const { setShowSearch, getCartAmount, navigate, token, setToken, setCartItems } = useContext(ShopContext);
+    const { setShowSearch, getTypeOfProductsAddedInCart, navigate, token, setToken, setCartItems } = useContext(ShopContext);
     const logout = () => {
         navigate('/login')
         localStorage.removeItem('token')
@@ -33,7 +33,7 @@ const NavBar = () => {
                     <hr className='w-2/4 border-none h-[1.5px] bg-gray-700 dark:bg-gray-300 hidden' />
                 </NavLink>
 
-                <NavLink to='/collection' className='flex flex-col items-center gap-1 hover:text-primary dark:hover:text-[#02ADEE]'>
+                <NavLink to='/products' className='flex flex-col items-center gap-1 hover:text-primary dark:hover:text-[#02ADEE]'>
                     <p>PRODUCTS</p>
                     <hr className='w-2/4 border-none h-[1.5px] bg-gray-700 dark:bg-gray-300 hidden' />
                 </NavLink>
@@ -52,7 +52,7 @@ const NavBar = () => {
             <div className='flex items-center gap-2 sm:gap-4 md:gap-6 text-gray-700 dark:text-gray-200'>
                 <ThemeSwitcher />
                 <div className="flex items-center gap-2 sm:gap-4 md:gap-6">
-                    <img onClick={() => { setShowSearch(true); navigate('/collection') }} src={assets.search_icon} className='w-5 cursor-pointer dark:invert' />
+                    <img onClick={() => { setShowSearch(true); navigate('/products') }} src={assets.search_icon} className='w-5 cursor-pointer dark:invert' />
                     <div className='group relative'>
                         <img onClick={() => token ? null : navigate('/login')} src={assets.profile_icon} className='w-5 cursor-pointer dark:invert' />
                         {/* Drop down menu */}
@@ -67,7 +67,7 @@ const NavBar = () => {
                     <Link to='/cart' className='relative'>
                         <img src={assets.cart_icon} className='w-5 min-w-5 dark:invert' alt="" />
                         <p className='absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black dark:bg-white text-white dark:text-black aspect-square rounded-full text-[8px]'>
-                            {getCartAmount()}
+                            {getTypeOfProductsAddedInCart()}
                         </p>
                     </Link>
                 </div>
@@ -81,7 +81,7 @@ const NavBar = () => {
                         <p>Back</p>
                     </div>
                     <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700' to='/'>HOME</NavLink>
-                    <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700' to='/collection'>PRODUCTS</NavLink>
+                    <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700' to='/products'>PRODUCTS</NavLink>
                     <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700' to='/orders'>ORDER</NavLink>
                     <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700' to='/contact'>CONTACT</NavLink>
                 </div>

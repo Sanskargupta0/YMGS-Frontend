@@ -7,7 +7,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const PlaceOrder = () => {
-  const [method, setMethod] = useState("cod");
+  const [method, setMethod] = useState("manual");
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -24,6 +24,7 @@ const PlaceOrder = () => {
     getCartAmount,
     delivery_fee,
     getCartItems,
+    currency,
   } = useContext(ShopContext);
   const [formData, setFormData] = useState({
     firstName: "",
@@ -54,6 +55,16 @@ const PlaceOrder = () => {
       cryptoTransactionId: "User didn't enter transaction ID",
     },
   });
+  const [couponCode, setCouponCode] = useState("");
+  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [couponError, setCouponError] = useState("");
+  const [couponSuccess, setCouponSuccess] = useState("");
+  const [isApplyingCoupon, setIsApplyingCoupon] = useState(false);
+  const [notes, setNotes] = useState("");
+  const [availableCryptos, setAvailableCryptos] = useState([]);
+  const [selectedCrypto, setSelectedCrypto] = useState("");
+  const [selectedNetwork, setSelectedNetwork] = useState("");
+  const [selectedWallet, setSelectedWallet] = useState(null);
 
   useEffect(() => {
     const fetchAddresses = async () => {
@@ -74,7 +85,20 @@ const PlaceOrder = () => {
         setIsLoading(false);
       }
     };
+
+    const fetchCryptoWallets = async () => {
+      try {
+        const response = await axios.get(backendUrl + "/api/order/crypto-wallets");
+        if (response.data.success) {
+          setAvailableCryptos(response.data.wallets);
+        }
+      } catch (error) {
+        console.error("Error fetching crypto wallets:", error);
+      }
+    };
+
     fetchAddresses();
+    fetchCryptoWallets();
   }, [backendUrl, token]);
 
   const saveNewAddress = async () => {
@@ -206,15 +230,53 @@ const PlaceOrder = () => {
     rzp.open();
   };
 
-  // Copy crypto wallet address to clipboard
-  const copyWalletAddress = () => {
-    navigator.clipboard.writeText(cryptoWalletAddress);
+  const copyWalletAddress = (address) => {
+    navigator.clipboard.writeText(address || cryptoWalletAddress);
     toast.info("Wallet address copied to clipboard");
+  };
+
+  const handleCryptoChange = (cryptoType) => {
+    setSelectedCrypto(cryptoType);
+    setSelectedNetwork("");
+    setSelectedWallet(null);
+    
+    setFormData((prev) => ({
+      ...prev,
+      manualPaymentDetails: {
+        ...prev.manualPaymentDetails,
+        cryptoType: cryptoType,
+        cryptoNetwork: ""
+      }
+    }));
+  };
+
+  const handleNetworkChange = (network) => {
+    setSelectedNetwork(network);
+    
+    const wallet = availableCryptos.find(
+      w => w.cryptoType === selectedCrypto && w.network === network
+    );
+    
+    setSelectedWallet(wallet || null);
+    
+    setFormData((prev) => ({
+      ...prev,
+      manualPaymentDetails: {
+        ...prev.manualPaymentDetails,
+        cryptoNetwork: network
+      }
+    }));
   };
 
   const handleMethodChange = (newMethod, paymentType = "") => {
     if (newMethod !== "stripe") {
       setMethod(newMethod);
+      
+      if (newMethod !== "manual" || paymentType !== "crypto") {
+        setSelectedCrypto("");
+        setSelectedNetwork("");
+        setSelectedWallet(null);
+      }
 
       // If this is a manual payment method, also set the payment type
       if (newMethod === "manual" && paymentType) {
@@ -223,9 +285,46 @@ const PlaceOrder = () => {
           manualPaymentDetails: {
             ...prev.manualPaymentDetails,
             paymentType: paymentType,
+            cryptoType: paymentType === "crypto" ? selectedCrypto : "",
+            cryptoNetwork: paymentType === "crypto" ? selectedNetwork : ""
           },
         }));
       }
+    }
+  };
+
+  const applyCoupon = async () => {
+    if (!couponCode.trim()) {
+      setCouponError("Please enter a coupon code");
+      return;
+    }
+
+    try {
+      setIsApplyingCoupon(true);
+      setCouponError("");
+      setCouponSuccess("");
+
+      const response = await axios.post(
+        backendUrl + "/api/order/verify-coupon",
+        {
+          couponCode,
+          amount: getCartAmount() // Only apply to cart amount, not delivery fee
+        }
+      );
+
+      if (response.data.success) {
+        setCouponDiscount(response.data.couponDetails.discount);
+        setCouponSuccess(`Coupon applied! You saved ${currency}${response.data.couponDetails.discount.toFixed(2)}`);
+      } else {
+        setCouponError(response.data.message);
+        setCouponDiscount(0);
+      }
+    } catch (error) {
+      console.error("Error applying coupon:", error);
+      setCouponError("Failed to apply coupon. Please try again.");
+      setCouponDiscount(0);
+    } finally {
+      setIsApplyingCoupon(false);
     }
   };
 
@@ -255,7 +354,7 @@ const PlaceOrder = () => {
     }
 
     try {
-      const items = getCartItems(); // Get formatted cart items
+      const items = getCartItems();
 
       let address = {
         firstName: formData.firstName,
@@ -284,11 +383,18 @@ const PlaceOrder = () => {
             phone: formData.billingPhone,
           };
 
+      // Calculate final amount correctly
+      const subtotal = getCartAmount();
+      const finalAmount = subtotal + delivery_fee - couponDiscount;
+
       let orderData = {
         address: showAddressForm ? address : selectedAddress,
         billingAddress,
         items: items,
-        amount: getCartAmount() + delivery_fee,
+        amount: finalAmount,
+        originalAmount: subtotal + delivery_fee,
+        notes: notes || "",
+        couponCode: couponDiscount > 0 ? couponCode : undefined
       };
 
       switch (method) {
@@ -349,10 +455,17 @@ const PlaceOrder = () => {
 
           if (response.data.success) {
             setCartItem({});
-            toast.success(
-              "Order placed successfully. One of our representative will get in touch with you in 24 hours Via call or email"
-            );
+            toast("Order placed successfully. One of our representative will get in touch with you in 24 hours Via call or email",{
+              type: "success",
+              autoClose: 5000
+            })
             navigate("/orders");
+            toast("Now you will be Redirected to Product Page",{
+              type:"info"
+            })
+            setTimeout(()=>{
+              navigate("/products")
+            }, 3000)
           } else {
             toast.error(response.data.message);
           }
@@ -673,7 +786,7 @@ const PlaceOrder = () => {
       {/*-------------------right side---------------------- */}
       <div className="mt-8">
         <div className="mt-8 min-w-80">
-          <CartTotal />
+          <CartTotal couponDiscount={couponDiscount} />
         </div>
         <div className="mt-12">
           <Title text1={"PAYMENT"} text2={"METHOD"} />
@@ -729,48 +842,29 @@ const PlaceOrder = () => {
               <p className="dark:text-gray-200">Crypto</p>
             </div>
 
-            {/* COD payment (disabled) */}
-            <div className="flex items-center gap-3 border dark:border-gray-700 p-2 px-3 cursor-not-allowed opacity-50 bg-gray-50 dark:bg-gray-600">
-              <p className="min-w-3.5 h-3.5 border dark:border-gray-500 rounded-full"></p>
-              <p className="dark:text-gray-200">Cash On Delivery</p>
-              <span className="text-xs text-gray-500 dark:text-gray-400">
-                (Coming Soon)
-              </span>
-            </div>
-            {/* Razorpay payment (disabled) */}
+            {/* Western Union payment */}
             <div 
-            // onClick={() => handleMethodChange('razorpay')} 
-              className='flex items-center gap-3 border dark:border-gray-700 p-2 px-3 cursor-not-allowed opacity-50 bg-gray-50 dark:bg-gray-600'
-            >
-              <p className="min-w-3.5 h-3.5 border dark:border-gray-500 rounded-full"></p>
+            onClick={() => handleMethodChange("manual", "western_union")}
+            className="flex items-center gap-3 border dark:border-gray-600 p-2 px-3 cursor-pointer hover:border-green-500 dark:hover:border-green-500 transition-colors dark:bg-gray-700">
+            <p
+                className={`min-w-3.5 h-3.5 border dark:border-gray-500 rounded-full ${
+                  method === "manual" &&
+                  formData.manualPaymentDetails.paymentType === "western_union"
+                    ? "bg-green-500"
+                    : ""
+                }`}
+              ></p>
+              <p className="dark:text-gray-200">Western Union</p>
               <img
                 className="h-5 mx-4"
-                src={assets.razorpay_logo}
-                alt="Razorpay (Currently Unavailable)"
+                src={assets.western_union}
+                alt="Western Union"
               />
-              <span className="text-xs text-gray-500 dark:text-gray-400">
-                (Coming Soon)
-              </span>
-            </div> 
-
-            {/* Stripe payment (disabled) */}
-            <div className="flex items-center gap-3 border dark:border-gray-700 p-2 px-3 cursor-not-allowed opacity-50 bg-gray-50 dark:bg-gray-600">
-              <p className="min-w-3.5 h-3.5 border dark:border-gray-500 rounded-full"></p>
-              <div className="flex items-center gap-2">
-                <img
-                  className="h-5 mx-4 grayscale"
-                  src={assets.stripe_logo}
-                  alt="Stripe (Currently Unavailable)"
-                />
-                <span className="text-xs text-gray-500 dark:text-gray-400">
-                  (Coming Soon)
-                </span>
-              </div>
             </div>
           </div>
 
           {/* Manual Payment Form */}
-          {method === "manual" && (
+          {method === "manual" && formData.manualPaymentDetails.paymentType !== "western_union" && (
             <div className="mt-6 border dark:border-gray-600 p-4 rounded dark:bg-gray-700">
               <h3 className="text-lg font-medium mb-4 dark:text-gray-200">
                 Payment Details
@@ -939,31 +1033,100 @@ const PlaceOrder = () => {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium mb-2 dark:text-gray-300">
-                      Send payment to this wallet address:
+                      Select Cryptocurrency
                     </label>
-                    <div className="flex items-center">
-                      <input
-                        type="text"
-                        value={cryptoWalletAddress}
-                        readOnly
-                        className="w-full border dark:border-gray-600 rounded py-2 px-3 dark:bg-gray-800 dark:text-white"
-                      />
-                      <button
-                        type="button"
-                        onClick={copyWalletAddress}
-                        className="bg-gray-200 dark:bg-gray-600 px-4 py-2 ml-2 rounded"
-                      >
-                        Copy
-                      </button>
-                    </div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
-                      After sending payment, please enter your transaction ID
-                      below
-                    </p>
+                    <select
+                      value={selectedCrypto}
+                      onChange={(e) => handleCryptoChange(e.target.value)}
+                      className="w-full border dark:border-gray-600 rounded py-2 px-3 dark:bg-gray-800 dark:text-white"
+                    >
+                      <option value="">Select a cryptocurrency</option>
+                      {[...new Set(availableCryptos.map(wallet => wallet.cryptoType))].map(crypto => (
+                        <option key={crypto} value={crypto}>
+                          {crypto}
+                        </option>
+                      ))}
+                    </select>
                   </div>
+                  
+                  {selectedCrypto && (
+                    <div>
+                      <label className="block text-sm font-medium mb-2 dark:text-gray-300">
+                        Select Network
+                      </label>
+                      <select
+                        value={selectedNetwork}
+                        onChange={(e) => handleNetworkChange(e.target.value)}
+                        className="w-full border dark:border-gray-600 rounded py-2 px-3 dark:bg-gray-800 dark:text-white"
+                      >
+                        <option value="">Select a network</option>
+                        {availableCryptos
+                          .filter(wallet => wallet.cryptoType === selectedCrypto)
+                          .map(wallet => (
+                            <option key={wallet.network} value={wallet.network}>
+                              {wallet.network}
+                            </option>
+                          ))
+                        }
+                      </select>
+                    </div>
+                  )}
+                  
+                  {selectedWallet ? (
+                    <div>
+                      <label className="block text-sm font-medium mb-2 dark:text-gray-300">
+                        Send payment to this wallet address:
+                      </label>
+                      <div className="flex items-center">
+                        <input
+                          type="text"
+                          value={selectedWallet.walletAddress}
+                          readOnly
+                          className="w-full border dark:border-gray-600 rounded py-2 px-3 dark:bg-gray-800 dark:text-white"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => copyWalletAddress(selectedWallet.walletAddress)}
+                          className="bg-gray-200 dark:bg-gray-600 px-4 py-2 ml-2 rounded"
+                        >
+                          Copy
+                        </button>
+                      </div>
+                      
+                      <div className="mt-4 flex justify-center">
+                        <img 
+                          src={selectedWallet.qrCodeImage} 
+                          alt={`${selectedCrypto} ${selectedNetwork} QR Code`} 
+                          className="w-48 h-48 object-contain border dark:border-gray-600 p-2"
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      <label className="block text-sm font-medium mb-2 dark:text-gray-300">
+                        Send payment to this wallet address:
+                      </label>
+                      <div className="flex items-center">
+                        <input
+                          type="text"
+                          value={cryptoWalletAddress}
+                          readOnly
+                          className="w-full border dark:border-gray-600 rounded py-2 px-3 dark:bg-gray-800 dark:text-white"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => copyWalletAddress()}
+                          className="bg-gray-200 dark:bg-gray-600 px-4 py-2 ml-2 rounded"
+                        >
+                          Copy
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                  
                   <div>
                     <label className="block text-sm font-medium mb-2 dark:text-gray-300">
-                      Your Transaction ID (Not Required)
+                      Your Transaction ID (Optional)
                     </label>
                     <input
                       type="text"
@@ -977,13 +1140,58 @@ const PlaceOrder = () => {
                         }))
                       }
                       className="w-full border dark:border-gray-600 rounded py-2 px-3 dark:bg-gray-800 dark:text-white"
-                      placeholder="Enter transaction ID Not Required"
+                      placeholder="Enter transaction ID (optional)"
                     />
                   </div>
                 </div>
               )}
             </div>
           )}
+
+          <div className="mt-4">
+            <label className="block text-sm font-medium mb-2 dark:text-gray-300">
+              Order Notes (Optional)
+            </label>
+            <textarea
+              value={notes || ""}
+              onChange={(e) => setNotes(e.target.value)}
+              className="w-full border dark:border-gray-600 rounded py-2 px-3 dark:bg-gray-800 dark:text-white"
+              placeholder="Add any special instructions or notes for your order"
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div className="mt-4">
+            <label className="block text-sm font-medium mb-2 dark:text-gray-300">
+              Apply Coupon
+            </label>
+            <div className="flex space-x-2">
+              <input
+                type="text"
+                value={couponCode}
+                onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                className="flex-grow border dark:border-gray-600 rounded py-2 px-3 dark:bg-gray-800 dark:text-white"
+                placeholder="Enter coupon code"
+              />
+              <button
+                type="button"
+                onClick={applyCoupon}
+                disabled={isApplyingCoupon}
+                className="bg-gray-200 dark:bg-gray-600 px-4 py-2 rounded"
+              >
+                {isApplyingCoupon ? "Applying..." : "Apply"}
+              </button>
+            </div>
+            {couponError && <p className="text-red-500 text-sm mt-1">{couponError}</p>}
+            {couponSuccess && <p className="text-green-500 text-sm mt-1">{couponSuccess}</p>}
+            
+            {couponDiscount > 0 && (
+              <div className="mt-2 p-2 bg-green-50 dark:bg-green-900 dark:text-green-100 text-green-700 rounded">
+                <p>Discount applied: {currency} {couponDiscount.toFixed(2)}</p>
+                <p>New total: {currency} {(getCartAmount() + delivery_fee - couponDiscount).toFixed(2)}</p>
+              </div>
+            )}
+          </div>
 
           <div className="w-full text-end mt-8">
             <button

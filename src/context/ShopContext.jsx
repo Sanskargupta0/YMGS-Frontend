@@ -201,6 +201,18 @@ const ShopContextProvider = (props) => {
         return totalCount;
     }
 
+    const getTypeOfProductsAddedInCart = () => {
+        // Count the number of unique product IDs in the cart
+        return Object.keys(cartItems).filter(itemId => {
+          const item = cartItems[itemId];
+          // Only count items that exist and have positive quantity
+          if (!item) return false;
+          
+          const quantity = typeof item === 'object' ? item.quantity : item;
+          return quantity > 0;
+        }).length;
+      }
+
     const updateQuantity = async (itemId, itemData) => {
         try {
             // Convert old format to new format if needed
@@ -508,7 +520,8 @@ const ShopContextProvider = (props) => {
         pagination: productsPagination,
         setPage,
         getProductById,
-        getRelatedProducts
+        getRelatedProducts,
+        getTypeOfProductsAddedInCart
     }
 
     return(

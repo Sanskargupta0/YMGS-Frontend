@@ -48,7 +48,7 @@ const Cart = () => {
       <h2 className='text-2xl font-medium text-gray-600 dark:text-gray-300 mb-4'>Your Cart is Empty</h2>
       <p className='text-gray-500 dark:text-gray-400 mb-8'>Looks like you haven&apos;t added anything to your cart yet</p>
       <button 
-        onClick={() => navigate('/collection')} 
+        onClick={() => navigate('/products')} 
         className='bg-black text-white px-8 py-3 text-sm hover:bg-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600'
       >
         SHOP NOW
