@@ -15,10 +15,9 @@ const NavBar = () => {
     }
 
     return (
-        <div className='flex items-center justify-between py-4 px-3 sm:px-5 font-medium bg-white dark:bg-gray-800 transition-colors'>
+        <div className='flex items-center justify-between py-4 px-3 sm:px-5 font-medium bg-[#7ccfff] dark:bg-gray-900 shadow-md fixed top-0 left-0 right-0 z-50 transition-colors'>
             <Link to="/" className="font-display text-primary dark:text-[#02ADEE]">
                 <div className="flex items-center gap-1 sm:gap-2">
-                    <span className="text-base sm:text-xl md:text-2xl whitespace-nowrap">YMGS Pharmacy</span>
                     <img
                         src={assets.logo}
                         alt="YMGS Pharmacy Logo"
@@ -40,6 +39,11 @@ const NavBar = () => {
 
                 <NavLink to='/orders' className='flex flex-col items-center gap-1 hover:text-primary dark:hover:text-[#02ADEE]'>
                     <p>ORDER</p>
+                    <hr className='w-2/4 border-none h-[1.5px] bg-gray-700 dark:bg-gray-300 hidden' />
+                </NavLink>
+
+                <NavLink to='/blogs' className='flex flex-col items-center gap-1 hover:text-primary dark:hover:text-[#02ADEE]'>
+                    <p>BLOG</p>
                     <hr className='w-2/4 border-none h-[1.5px] bg-gray-700 dark:bg-gray-300 hidden' />
                 </NavLink>
 
@@ -74,16 +78,17 @@ const NavBar = () => {
                 <img onClick={() => setVisible(true)} src={assets.menu_icon} className='w-5 cursor-pointer sm:hidden dark:invert ml-1' alt=""></img>
             </div>
             {/* sidebar menu for small screen*/}
-            <div className={`fixed top-0 right-0 bottom-0 z-50 overflow-hidden bg-white dark:bg-gray-800 transition-all duration-300 ${visible ? 'w-full sm:w-64' : 'w-0'}`}>
+            <div className={`fixed top-0 right-0 bottom-0 z-50 overflow-hidden bg-gray-100 dark:bg-gray-900 transition-all duration-300 ${visible ? 'w-full sm:w-64' : 'w-0'}`}>
                 <div className='flex flex-col text-gray-600 dark:text-gray-300'>
-                    <div onClick={() => setVisible(false)} className='flex items-center gap-4 p-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700'>
+                    <div onClick={() => setVisible(false)} className='flex items-center gap-4 p-3 cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-800'>
                         <img className='h-4 rotate-180 dark:invert' src={assets.dropdown_icon} alt="" />
                         <p>Back</p>
                     </div>
-                    <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700' to='/'>HOME</NavLink>
-                    <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700' to='/products'>PRODUCTS</NavLink>
-                    <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700' to='/orders'>ORDER</NavLink>
-                    <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700' to='/contact'>CONTACT</NavLink>
+                    <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-gray-200 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-800' to='/'>HOME</NavLink>
+                    <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-gray-200 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-800' to='/products'>PRODUCTS</NavLink>
+                    <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-gray-200 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-800' to='/orders'>ORDER</NavLink>
+                    <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-gray-200 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-800' to='/blogs'>BLOG</NavLink>
+                    <NavLink onClick={() => setVisible(false)} className='py-2 pl-6 border border-gray-200 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-800' to='/contact'>CONTACT</NavLink>
                 </div>
             </div>
         </div>

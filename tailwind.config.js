@@ -46,7 +46,7 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'],
+        sans: ['Montserrat', 'sans-serif'],
         display: ['Playfair Display', 'serif'],
       },
       keyframes: {

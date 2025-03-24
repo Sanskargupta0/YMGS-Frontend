@@ -331,8 +331,8 @@ const Product = () => {
           </p>
           <hr className="mt-8 sm:w-4/5 dark:border-gray-700" />
           <div className="text-sm text-gray-500 dark:text-gray-400 mt-5 flex flex-col gap-1">
-            <p>Cash on Delivery Available on this Product.</p>
-            <p>No Refunds and No Returns</p>
+            <p>All Meds are FDA Approved</p>
+            <p>100% Refund Guarantee</p>
           </div>
         </div>
       </div>

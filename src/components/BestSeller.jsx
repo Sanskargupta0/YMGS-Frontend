@@ -2,11 +2,12 @@ import { useEffect, useState, useContext } from 'react';
 import { ShopContext } from '../context/ShopContext';
 import Title from './Title';
 import ProductItem from './ProductItem';
-import { Loader2 } from 'lucide-react';
+import { Loader2, ShoppingCart } from 'lucide-react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const BestSeller = () => {
-  const { backendUrl, currency } = useContext(ShopContext);
+  const { backendUrl } = useContext(ShopContext);
   const [bestSeller, setBestSeller] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -39,7 +40,7 @@ const BestSeller = () => {
       <div className='text-center text-3xl py-8'>
         <Title text1={'BEST'} text2={'SELLERS'} />
         <p className='w-3/4 m-auto text-xs sm:text-sm md:test-base text-gray-600 dark:text-gray-300'>
-          These Items Are Selling Faster, Grab Your's Before The Stock Ends...!
+          These Items Are Selling Faster, Grab Yours Before The Stock Ends...!
         </p>
       </div>
     
@@ -50,14 +51,22 @@ const BestSeller = () => {
       ) : (
         <div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 gap-y-6'>
           {bestSeller.map((item) => (
-            <ProductItem 
-              key={item._id} 
-              id={item._id} 
-              image={item.image} 
-              name={item.name} 
-              price={item.price}
-              quantityPriceList={item.quantityPriceList}
-            />
+            <div key={item._id} className="flex flex-col">
+              <ProductItem 
+                id={item._id} 
+                image={item.image} 
+                name={item.name} 
+                price={item.price}
+                quantityPriceList={item.quantityPriceList}
+              />
+              <Link 
+                to={`/product/${item._id}`} 
+                className="mt-2 mx-auto bg-primary dark:bg-[#02ADEE] text-white dark:text-gray-800 px-4 py-1.5 rounded-full text-xs font-medium flex items-center gap-1 hover:bg-primary/90 dark:hover:bg-yellow-500 transition-colors"
+              >
+                <ShoppingCart size={14} />
+                Buy Now
+              </Link>
+            </div>
           ))}
         </div>
       )}

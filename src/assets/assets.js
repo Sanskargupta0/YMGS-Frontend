@@ -9,7 +9,7 @@ import western_union from './western_union_icon.png'
 import support_img from './support_img.png'
 import menu_icon from './menu_icon.png'
 import cross_icon from './cross_icon.png'
-import image1 from "./image1.jpg"
+import image1 from "./image1.png"
 import image2 from "./image2.png"
 import image3 from "./image3.png"
 import about from './about.jpg'

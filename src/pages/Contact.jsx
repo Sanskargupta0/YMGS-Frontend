@@ -133,7 +133,7 @@ const Contact = () => {
             <div>
               <p className='font-semibold text-xl text-gray-800 dark:text-gray-200 mb-4'>Get In Touch</p>
               <p className='text-gray-600 dark:text-gray-300 max-w-md'>Have questions about our products or delivery? 
-                We&apos;re here to help you get the freshest produce for your family.</p>
+                We&apos;re are here to help you get all FDA approved quality medicines at best prices.</p>
             </div>
 
             <div className='flex flex-col gap-6'>
