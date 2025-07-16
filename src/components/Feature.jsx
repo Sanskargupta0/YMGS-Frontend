@@ -1,7 +1,4 @@
-import { useNavigate } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
 const Feature = () => {
-  const navigate = useNavigate();
   return (
     <section className="py-12 dark:bg-gray-800">
       <div className="container">
@@ -59,26 +56,6 @@ const Feature = () => {
             </div>
           ))}
         </div>
-      </div>
-      <div className="flex-1 animate-fade-up pt-12 pb-12 container">
-        <span className="bg-secondary dark:bg-gray-700 text-primary dark:text-green-300 px-4 py-1 rounded-full text-sm font-medium">
-          24/7 Healthcare Support
-        </span>
-        <h1 className="mt-6 font-display text-4xl md:text-6xl font-semibold text-primary dark:text-[#02ADEE] leading-tight">
-          Your Trusted Online Medicine & Healthcare Partner
-        </h1>
-        <p className="mt-6 text-gray-600 dark:text-gray-300 text-lg">
-          YMGS Pharmacy brings quality healthcare to your doorstep. Order
-          medicines, health supplements, and medical supplies with just a few
-          clicks.
-        </p>
-        <button
-          onClick={() => navigate("/products")}
-          className="mt-8 bg-primary dark:bg-green-300 text-white dark:text-gray-800 px-8 py-3 rounded-full font-medium inline-flex items-center gap-2 hover:bg-primary/90 dark:hover:bg-yellow-500 transition-colors"
-        >
-          Order Medicines
-          <ArrowRight size={20} />
-        </button>
       </div>
     </section>
   );

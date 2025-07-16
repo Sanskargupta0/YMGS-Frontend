@@ -1,4 +1,5 @@
 import {Routes, Route} from 'react-router-dom'
+import ScrollToTop from './components/ScrollToTop'
 import Home from './pages/Home'
 import Collection from './pages/Collection'
 import About from './pages/About'
@@ -23,6 +24,7 @@ import Policy from './pages/Policy'
 const App = () => {
   return(
     <div className='bg-white dark:bg-gray-800 transition-colors font-sans'>
+      <ScrollToTop/>
       <ToastContainer position='bottom-right' autoClose={2000} />
       <NavBar />
       <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw] pt-20'>

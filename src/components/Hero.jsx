@@ -29,14 +29,14 @@ const Hero = () => {
 
   return (
     <div className="flex flex-col sm:flex-row dark:bg-gray-800">
-      <section className="pt-12 pb-12 container">
+      <section className="pt-12 pb-12 container pr-0 pl-0 pb-0">
         <div className="flex flex-col md:flex-row items-center gap-8 md:gap-16">
           <div
             className="flex-1 relative animate-fade-up"
             style={{ animationDelay: "0.2s" }}
           >
             {/* Image slider container */}
-            <div className="relative h-[600px] w-full rounded-2xl overflow-hidden shadow-xl">
+            <div className="relative h-[300px] w-full rounded-2xl overflow-hidden shadow-xl">
               {/* Static Image Backup (will show if slider fails) */}
               <img
                 src={sliderImages[0]}

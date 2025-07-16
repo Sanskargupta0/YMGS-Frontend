@@ -3,7 +3,8 @@ import { ShopContext } from '../context/ShopContext';
 import { assets } from '../assets/assets';
 import Title from '../components/Title';
 import ProductItem from '../components/ProductItem';
-import { ChevronLeft, ChevronRight, Loader2, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ChevronLeft, ChevronRight, ShoppingCart, Loader2, X } from 'lucide-react';
 
 const Collection = () => {
   const { 
@@ -429,6 +430,7 @@ const Collection = () => {
             ) : (
               <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-6'>
                 {products.map((item) => (
+                  <div key={item._id} className="flex flex-col items-center">
                   <ProductItem 
                     key={item._id} 
                     id={item._id} 
@@ -437,6 +439,14 @@ const Collection = () => {
                     image={item.image}
                     quantityPriceList={item.quantityPriceList}
                   />
+                  <Link 
+                to={`/product/${item._id}`} 
+                className="mt-2 mx-auto bg-primary dark:bg-[#02ADEE] text-white dark:text-gray-800 px-4 py-1.5 rounded-full text-xs font-medium flex items-center gap-1 hover:bg-primary/90 dark:hover:bg-yellow-500 transition-colors"
+              >
+                <ShoppingCart size={14} />
+                Buy Now
+              </Link>
+              </div>
                 ))}
               </div>
             )}
